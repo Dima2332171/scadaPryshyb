@@ -1,0 +1,220 @@
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-background);
+  overflow: hidden;
+}
+
+.diagram-container {
+  width: 100%;
+  height: 100%;
+  padding-top: 65px;
+}
+
+.back-button {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.top-layout {
+  display: flex;
+  width: 100%;
+  height: 60%;   /* 55–60% */
+  gap: 16px;     /* расстояние между блоками */
+  /*margin-top: 70px;*/
+}
+
+.left-block {
+  width: 20%;
+  background: var(--rect-color);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden; /* важно! */
+}
+
+.full-svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* чтобы не мешал кликам */
+}
+
+.right-block {
+  flex: 1;      /* занимает оставшееся пространство */
+  background: var(--rect-color);
+  border-radius: 12px;
+}
+
+/* НИЖНИЙ БЛОК */
+.bottom-block {
+  margin-top: 16px;
+  height: 38%;  /* 35–40% */
+  width: 100%;
+  background: var(--rect-color);
+  border-radius: 12px;
+}
+
+.satec-card {
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--color-element);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.satec-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.satec-status.ok { color: #4ade80; }
+.satec-status { color: #ef4444; font-weight: bold; }
+
+.satec-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.satec-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+}
+
+
+.satec-info{
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+
+
+.satec-phases {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.phase-card {
+  flex: 0 0 auto; ;
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 10px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--color-element);
+  transition: all .25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.phase-card:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.phase-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.phase-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.phase-cos {
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.phase-cos.good {
+  color: #34d399;
+}
+
+.phase-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 3px;
+  column-gap: 12px;
+  font-size: 18px;
+}
+
+.row {
+  display: contents;
+}
+
+.label {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.value {
+  text-align: right;
+  font-weight: 600;
+  color: var(--color-element);
+}
+
+.row.warn .value {
+  color: #fbbf24;
+}
+
+.row.warn .value::after {
+  content: " ▲";
+  color: #ef4444;
+  font-size: 10px;
+}
+
+.satec-errors {
+  flex: 1;
+  height: 250px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--color-element);
+
+}
+
+.satec-errors-title{
+  color: red;
+}
+
+/* А вот сам список должен скроллиться */
+.satec-errors-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;     /* вот тут появляется скролл */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

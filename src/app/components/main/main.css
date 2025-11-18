@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-background);
+}
+
+.diagram-container {
+  width: 100%;
+  height: 100%;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+}
+
+.load-switch{
+  cursor: pointer;
+}
+
+.satec-krpz{
+  cursor: pointer;
+}
+
+.earthing-switch{
+  cursor: pointer;
+}
+

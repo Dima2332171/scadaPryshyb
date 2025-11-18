@@ -1,1 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
+html, body, p {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+
+:root {
+  --color-background: #f0f0f0;
+  --color-element: #000;
+  --color-helper-breaker: #f0f0f0;
+  --color-helper: #f0f0f0;
+  --app-secondary-button-hover-background: #616161;
+  --app-text-color: #34495e;
+  --rect-color: rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme {
+  --color-background: #1a1a1a;
+  --color-element: #f0f0f0;
+  --color-helper-breaker: #1a1a1a;
+  --color-helper: #1a1a1a;
+  --app-text-color: #e0e0e0;
+  --rect-color: rgba(255,255,255,0.05);
+  --app-secondary-button-hover-background: #727b87;
+}
