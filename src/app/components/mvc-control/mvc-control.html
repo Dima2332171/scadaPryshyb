@@ -1,0 +1,265 @@
+<div class="diagram-container">
+  <div class="back-button" (click)="openView('main')">
+    <svg width="48" height="36" viewBox="0 0 48 36" fill="none">
+      <path d="M20 18L10 26L20 34" stroke="var(--color-element)" stroke-width="3" stroke-linecap="round"
+            stroke-linejoin="round"/>
+      <line x1="10" y1="26" x2="44" y2="26" stroke="var(--color-element)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="main">
+    <div class="control-panel">
+      <div class="panel-header">
+        <h2>Налаштування режиму роботи</h2>
+      </div>
+
+      <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="settings-grid">
+
+
+        <div class="setting-row">
+          <div class="setting-label">Режим роботи</div>
+          <div class="setting-input-select">
+            <select formControlName="workMode">
+              @for (mode of workModes; track mode.value) {
+                <option [value]="mode.value">{{ mode.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-row priority">
+          <div class="setting-label">Пріоритет мережа</div>
+          <div class="setting-input">
+            <label class="checkbox-wrapper large">
+              <input type="checkbox" formControlName="priorityGrid">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+
+        <!-- Видача в мережу -->
+        <div class="setting-row">
+          <div class="setting-label">Видача в мережу, кВт</div>
+          <i class="fa-solid fa-arrow-up arrow-up"></i>
+          <div class="setting-input">
+            <input type="number" formControlName="dischargeToGrid" placeholder="0" min="0" step="1">
+          </div>
+        </div>
+
+        <!-- Заряд з мережі -->
+        <div class="setting-row">
+          <div class="setting-label">Заряд з мережі, кВт</div>
+          <i class="fa-solid fa-arrow-down arrow-down"></i>
+          <div class="setting-input">
+            <input type="number" formControlName="chargeFromGrid" placeholder="0" min="0" step="1">
+          </div>
+        </div>
+
+        <div class="setting-row priority">
+          <div class="setting-label">Позитивні небаланси</div>
+          <div class="setting-input">
+            <label class="checkbox-wrapper large">
+              <input type="checkbox" formControlName="imbalances">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+
+        <!-- Пріоритет PV -->
+        <div class="setting-row priority">
+          <div class="setting-label">Пріоритет PV</div>
+          <div class="setting-input">
+            <label class="checkbox-wrapper large">
+              <input type="checkbox" formControlName="priorityPv">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Уставка PV -->
+        <div class="setting-row">
+          <div class="setting-label">Уставка PV, кВт</div>
+          <div class="setting-input">
+            <input type="number" formControlName="pv" placeholder="0" min="0" step="0.1">
+<!--            <label class="checkbox-wrapper">-->
+<!--              <input type="checkbox" formControlName="pvSetpointEnabled">-->
+<!--              <span class="checkmark"></span>-->
+<!--            </label>-->
+          </div>
+        </div>
+
+        <!-- Пріоритет BESS -->
+        <div class="setting-row priority">
+          <div class="setting-label">Пріоритет BESS</div>
+          <div class="setting-input">
+            <label class="checkbox-wrapper large">
+              <input type="checkbox" formControlName="priorityBess">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+        <!-- BESS1 -->
+        <div class="setting-row bess">
+
+          <div class="setting-label">Уставка BESS1, кВт</div>
+          <div class="setting-input dual">
+            <div class="input-group">
+              <i class="fa-solid fa-arrow-down arrow-down"></i>
+              <input
+                type="number"
+                formControlName="bess1Charge"
+                class="main"
+                placeholder="0"
+                max="0">
+            </div>
+            <div class="input-group">
+              <i class="fa-solid fa-arrow-up arrow-up"></i>
+              <input
+                type="number"
+                formControlName="bess1Discharge"
+                class="main"
+                placeholder="0"
+                min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- BESS2 -->
+        <div class="setting-row bess">
+          <div class="setting-label">Уставка BESS2, кВт</div>
+          <div class="setting-input dual">
+            <div class="input-group">
+              <i class="fa-solid fa-arrow-down arrow-down"></i>
+              <input
+                type="number"
+                formControlName="bess2Charge"
+                class="main"
+                placeholder="0"
+                max="0">
+            </div>
+            <div class="input-group">
+              <i class="fa-solid fa-arrow-up arrow-up"></i>
+              <input
+                type="number"
+                formControlName="bess2Discharge"
+                class="main"
+                placeholder="0"
+                min="0">
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="panel-actions">
+        <button class="btn-primary">Застосувати</button>
+        <button class="btn-secondary" (click)="resetForm()">Скинути</button>
+      </div>
+    </div>
+
+    <div class="result-block">
+      @if (daysJournal) {
+        @for (day of daysJournal; track $index) {
+          <div class="day-block">
+
+            <!-- Заголовок дня -->
+            <div class="header-card-day">
+              <h3>{{ day.date }}</h3>
+              <div class="receivedAt">
+                  Встановлено о: <span>{{convertUtcToKyiv(day.updatedAt)}} </span>
+              </div>
+              <div class="updateAt">
+                Останнє оновлення: <span> {{convertUtcToKyiv(day.receivedAt)}} </span>
+              </div>
+              @if($index == 0){
+                <div class="button-upload">
+                  <button (click)="updateJournal()" title="Оновити">
+                    Оновити
+                  </button>
+                </div>
+              }
+
+              <div class="edit" (click)="openView('mvc-edit-day', day.date)">
+                <p>Редагувати</p>
+              </div>
+            </div>
+
+            <!-- Таблица дня -->
+            <table class="day-table">
+              <thead>
+              <tr>
+                <th>Час</th>
+                <th>Grid*</th>
+                <th>Мережа</th>
+                <th>PV*</th>
+                <th>PV</th>
+                <th>Небал.</th>
+                <th>BESS*</th>
+                <th>BESS1</th>
+                <th>BESS2</th>
+              </tr>
+              </thead>
+
+              <tbody #dayTableBody>
+                @for (item of day.data; track item) {
+                  <tr
+                    [class.active-interval]="isIntervalActive(item)"
+                  >
+                    <!-- TIME -->
+                    <td>
+                      @if (item.startTime && item.endTime) {
+                        {{ getLocalTime(item.startTime) }} - {{ getLocalTime(item.endTime) }}
+                      }
+                    </td>
+
+                    <td>
+                      {{ item.priorityGrid ? 'Так' : 'Ні'}}
+                    </td>
+
+                    <!-- GRID -->
+                    <td class="grid-cell">
+                        <span>
+                        <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.dischargeToGrid }}
+                      </span> <br>
+                      <span>
+                        <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.chargeFromGrid }}
+                      </span>
+
+                    </td>
+
+                    <!-- PRIORITY -->
+                    <td>{{ item.priorityPv ? 'Так' : 'Ні' }}</td>
+
+                    <!-- PV -->
+                    <td>{{ item.pv }}</td>
+
+                    <!-- IMBALANCES -->
+                    <td>
+                      @if (item.imbalances) { Так }
+                      @else { Ні }
+                    </td>
+
+                    <td>{{ item.priorityBess ? 'Так' : 'Ні' }}</td>
+
+                    <!-- BESS1 -->
+                    <td>
+                      <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess1Discharge }}<br>
+                      <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess1Charge }}
+                    </td>
+
+                    <!-- BESS2 -->
+                    <td>
+                      <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess2Discharge }}<br>
+                      <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess2Charge }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+
+            </table>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</div>

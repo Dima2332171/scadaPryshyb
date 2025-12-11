@@ -1,0 +1,369 @@
+:host {
+  display: block;
+  height: 100vh;
+  background-color: var(--color-background);
+  overflow: hidden;
+}
+
+.diagram-container {
+  width: 100%;
+  height: 100%;
+  padding-top: 65px;
+}
+
+.back-button {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.main{
+  display: flex;
+}
+
+
+.control-panel {
+  width: 90%;
+  max-width: 500px;
+  margin: 15px 15px;
+  padding: 20px 30px;
+  background: var(--rect-color);
+  border-radius: 20px;
+  border: 1px solid var(--rect-color);
+  box-shadow: 0 10px 30px var(--rect-color-shadow);
+  color: var(--color-element);
+  transition: all 0.3s ease;
+}
+
+.panel-header h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: bold;
+  border-bottom: 2px solid var(--rect-color);
+  padding-bottom: 15px;
+  text-align: center;
+  color: var(--app-text-color);
+}
+
+
+.settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+}
+
+
+.setting-label {
+  font-size: 18px;
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+
+.setting-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.setting-input-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.setting-input-select select{
+  background-color: var(--color-background);
+  border: 1px solid var(--rect-color);
+  border-radius: 8px;
+  color: var(--color-element);
+  text-align: center;
+  transition: border-color 0.2s;
+  padding: 5px;
+}
+
+.setting-input input[type="number"] {
+  width: 90px;
+  padding: 8px;
+  background-color: var(--color-background);
+  border: 1px solid var(--rect-color);
+  border-radius: 8px;
+  color: var(--color-element);
+  text-align: right;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.setting-input input[type="number"]:focus {
+  outline: none;
+  border-color: var(--rect-color);
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+
+.setting-input select {
+  padding: 8px 12px;
+  background: var(--color-background);
+  color: var(--color-element);
+  border: 1px solid var(--rect-color);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.checkbox-wrapper {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  user-select: none;
+  margin-left: 10px;
+}
+
+.checkbox-wrapper input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  background-color: var(--rect-color);
+  border: 1px solid var(--rect-color);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.checkbox-wrapper:hover input ~ .checkmark {
+  background-color: #555;
+}
+
+.checkbox-wrapper input:checked ~ .checkmark {
+  background-color: var(--rect-color);
+  border-color: var(--rect-color);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-wrapper input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-wrapper .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-wrapper.large .checkmark {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+}
+
+.checkbox-wrapper.large .checkmark:after {
+  left: 8px;
+  top: 5px;
+  width: 6px;
+  height: 12px;
+}
+
+
+
+
+.panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+
+}
+
+.panel-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: var(--rect-color);
+  color: var(--color-element);
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+}
+
+.btn-secondary {
+  background-color: var(--rect-color);
+  color: var(--color-element);
+  border: 1px solid var(--rect-color);
+}
+
+.btn-secondary:hover {
+  background-color: #444;
+  color: var(--rect-color);
+}
+
+
+.result-block {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  margin: 15px 20px;
+  overflow: visible;
+}
+
+.day-block {
+  background: var(--rect-color);
+  padding:0 30px;
+  border-radius: 16px;
+  color: var(--color-element);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  height: 210px;
+}
+
+.header-card-day {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+
+.day-table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 150px;
+  font-size: 15px;
+  border-collapse: collapse;
+}
+
+
+.day-table th,
+.day-table td {
+  /*padding: 2px 0;*/
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.day-table th {
+  position: sticky;
+  top:  0;
+  z-index: 1;
+  color: var(--app-text-color);
+}
+
+
+.day-table tbody {
+  display: block;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+/* Строки — фиксированная структура */
+.day-table tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* Ячейки в теле — подстраиваются под thead */
+.day-table tbody td {
+  display: table-cell;
+}
+
+
+/* Опционально: hover эффект */
+.day-table tr:hover {
+  background: rgba(255,255,255,0.06);
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 90px;
+}
+
+.arrow-up{
+  color: green;
+}
+
+.arrow-down{
+  color: red;
+}
+/*.day-table tbody::-webkit-scrollbar,*/
+/*.result-block::-webkit-scrollbar {*/
+/*  width: 8px;                    !* тонкий *!*/
+/*  !*height: 8px;*!*/
+/*}*/
+
+/*.day-table tbody::-webkit-scrollbar-track,*/
+/*.result-block::-webkit-scrollbar-track {*/
+/*  !*background: transparent;      !* фон прозрачный *!*!*/
+/*  !*border-radius: 10px;*!*/
+/*}*/
+
+/*.day-table tbody::-webkit-scrollbar-thumb,*/
+/*.result-block::-webkit-scrollbar-thumb {*/
+/*  background: rgba(255, 255, 255, 0.25);*/
+/*  border-radius: 10px;*/
+/*  border: 2px solid transparent;     !* ← ВОТ МАГИЯ! *!*/
+/*  background-clip: content-box;        !* ← не даёт скроллу "съедать" ширину *!*/
+/*  transition: all 0.3s ease;*/
+/*}*/
+
+/*.day-table tbody::-webkit-scrollbar-thumb:hover,*/
+/*.result-block::-webkit-scrollbar-thumb:hover {*/
+/*  background: rgba(255, 255, 255, 0.5);*/
+/*  border-width: 1px;*/
+/*  background-clip: content-box;*/
+/*}*/
+
+/* Для Firefox */
+.day-table tbody,
+.result-block {
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-text-color) transparent;
+}
+
+tr.active-interval {
+  animation: glow 3s ease-in-out infinite alternate;
+  box-shadow: inset 0 0 10px rgba(76, 192, 175, 192);
+  border-radius: 5px;
+}
+

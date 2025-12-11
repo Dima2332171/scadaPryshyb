@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  background-color: var(--color-background);
+  color: var(--color-element);
+}
+
+
+.preview-table {
+  width: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--color-element);
+}
+
+.preview-table th,
+.preview-table td {
+  border: 1px solid var(--color-element);
+  text-align: center;
+  white-space: nowrap;
+  padding: 5px;
+}
+
+.preview-table th {
+  /*background: var(--color-element);*/
+  font-weight: bold;
+}
+
+.date {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: var(--color-element);
+}
+
+.container h2 {
+  color: var(--color-element);
+}

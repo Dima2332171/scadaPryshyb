@@ -1,0 +1,124 @@
+<div class="diagram-container">
+  <div class="back-button" (click)="openView('mvc-control')">
+    <svg width="48" height="36" viewBox="0 0 48 36" fill="none">
+      <path d="M20 18L10 26L20 34" stroke="var(--color-element)" stroke-width="3" stroke-linecap="round"
+            stroke-linejoin="round"/>
+      <line x1="10" y1="26" x2="44" y2="26" stroke="var(--color-element)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="mvc-edit-block">
+    <div class="date-header">
+      {{ day }}
+    </div>
+    <div class="mvc-edit-container">
+      <div class="left-block">
+
+        @if (setPointToday) {
+          <div class="header-block">
+            <div class="receivedAt">
+              Встановлено о: <span>{{convertUtcToKyiv(setPointToday.updatedAt)}} </span>
+            </div>
+            <div class="updateAt">
+              Останнє оновлення: <span> {{convertUtcToKyiv(setPointToday.receivedAt)}} </span>
+            </div>
+            <div class="button-update">
+              <button (click)="refreshSetPointData()">Оновити</button>
+            </div>
+            <div class="edit">
+              <button>Редагувати</button>
+            </div>
+          </div>
+
+          <table class="setpoints-table">
+            <thead>
+            <tr>
+              <th>Час</th>
+              <th>Grid*</th>
+              <th>Мережа</th>
+              <th>PV*</th>
+              <th>PV</th>
+              <th>Небал.</th>
+              <th>BESS*</th>
+              <th>BESS1</th>
+              <th>BESS2</th>
+            </tr>
+            </thead>
+
+            <tbody>
+              @for(item of setPointToday.data; track item.startTime) {
+                <tr>
+                  <td>{{ getLocalTime(item.startTime) }} – {{ getLocalTime(item.endTime) }}</td>
+                  <td>{{ item.priorityGrid ? 'Так' : 'Ні' }}</td>
+                  <td>
+                    <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.dischargeToGrid }}<br>
+                    <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.chargeFromGrid }}
+                  </td>
+                  <td>{{ item.priorityPv ? 'Так' : 'Ні' }} </td>
+                  <td>
+                    {{ item.pv }}
+                  </td>
+                  <td>
+                    {{ item.imbalances ? 'Так' : 'Ні' }}
+                  </td>
+                  <td>
+                    {{ item.priorityBess ? 'Так' : 'Ні' }}
+                  </td>
+                  <td>
+                    <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess1Discharge }}<br>
+                    <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess1Charge }}
+                  </td>
+                  <td>
+                    <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess2Discharge }}<br>
+                    <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess2Charge }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+        } @else {
+          <span>Дані уставок за цей день - відсутні.</span>
+        }
+
+      </div>
+      <div class="right-block">
+        <h3>Excel імпорт / експорт</h3>
+
+
+        <button class="btn-secondary" (click)="downloadFile()">
+          Завантажити поточний Excel
+        </button>
+        <hr>
+
+        <div class="upload-dropzone"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave($event)"
+             (drop)="onDrop($event)"
+             [class.dragover]="isDragOver">
+
+          @if (!selectedFile) {
+
+            Перетягніть файл Excel сюди або виберіть вручну <br>
+            <button class="btn-secondary" (click)="fileInput.click()">Вибрати файл</button>
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept=".xlsx,.xls" hidden />
+
+          } @else {
+
+            <div class="file-info">
+              <span class="file-name">{{ selectedFile.name }}</span>
+              <span class="remove-file" (click)="removeFile()">&#10005;</span>
+            </div>
+
+          }
+        </div>
+
+        <button class="btn-primary" (click)="uploadFile()" [disabled]="!selectedFile">
+          Завантажити на сервер
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -2,7 +2,7 @@ import {
   Component, EventEmitter, Input, OnChanges, OnDestroy,
   Output, SimpleChanges
 } from '@angular/core';
-import { Websocket } from '../../core/websocket';
+import { Websocket } from '../../core/services/websocket';
 import { filter, Subject, takeUntil } from 'rxjs';
 import {DecimalPipe, UpperCasePipe} from '@angular/common';
 

@@ -1,0 +1,58 @@
+<div class="container">
+  <h2 mat-dialog-title>Підтвердження уставок</h2>
+
+  <mat-dialog-content>
+    <div class="date">
+      <strong>Дата:</strong> {{ data.parsedData.date }}
+    </div>
+
+    <table class="preview-table">
+      <thead>
+      <tr>
+        <th>Початок</th>
+        <th>Кінець</th>
+        <th>Пріор. мережа</th>
+        <th>Заряд з мережі</th>
+        <th>Розряд в мережу</th>
+        <th>Пріор. Pv</th>
+        <th>PV</th>
+        <th>Пріор. Bess</th>
+        <th>B1 Charge</th>
+        <th>B1 Discharge</th>
+        <th>B2 Charge</th>
+        <th>B2 Discharge</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (row of data.parsedData.data; track $index) {
+          <tr>
+            <td>{{ convertUtcToKyiv(row.startTime) }}</td>
+            <td>{{ convertUtcToKyiv(row.endTime) }}</td>
+            <td>{{ row.priorityGrid ? 'Так' : 'Ні' }}</td>
+            <td>{{ row.chargeFromGrid }}</td>
+            <td>{{ row.dischargeToGrid }}</td>
+            <td>{{ row.priorityPv ? 'Так' : 'Ні' }}</td>
+            <td>{{ row.pv }}</td>
+            <td>{{ row.priorityBess ? 'Так' : 'Ні' }}</td>
+            <td>{{ row.bess1Charge }}</td>
+            <td>{{ row.bess1Discharge }}</td>
+            <td>{{ row.bess2Charge }}</td>
+            <td>{{ row.bess2Discharge }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Відмінити</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onConfirm()"
+      [disabled]="isSending"
+    >
+      {{ isSending ? 'Збереження...' : 'Підтвердити' }}
+    </button>
+  </mat-dialog-actions>
+</div>

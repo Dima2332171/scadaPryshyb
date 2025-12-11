@@ -1,0 +1,161 @@
+:host {
+  display: block;
+  height: 100vh;
+  background-color: var(--color-background);
+  overflow: hidden;
+}
+
+/* Весь контейнер */
+.diagram-container {
+  width: 100%;
+  height: 100%;
+  padding-top: 65px;
+}
+
+.back-button {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.back-button:hover {
+  transform: translateX(-3px);
+  opacity: 0.8;
+}
+
+/* Заголовок даты */
+.date-header {
+  text-align: center;
+  color: var(--color-element);
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+/* Основная двухколоночная область */
+.mvc-edit-container {
+  display: flex;
+  height: calc(100% - 80px);
+  gap: 20px;
+  padding: 0 20px;
+}
+
+/* Левый + правый блок */
+.left-block,
+.right-block {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 20px;
+  color: var(--color-element);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 12px rgba(0,0,0,0.15);
+}
+
+/* Выровнять таблицу по центру */
+.left-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Красивая таблица */
+.setpoints-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--color-element);
+  font-size: 0.97rem;
+}
+
+.setpoints-table th,
+.setpoints-table td {
+  padding: 10px 12px;
+  border: 1px solid rgba(180, 180, 180, 0.15);
+  text-align: left;
+}
+
+.setpoints-table th {
+  background: rgba(255, 255, 255, 0.06);
+  font-weight: 600;
+}
+
+.setpoints-table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.setpoints-table tr:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Правый блок */
+.right-block h3 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+
+.btn-primary {
+  background: var(--color-element);
+  color: white;
+  border: none;
+}
+
+.btn-secondary {
+  border: 1px solid var(--color-element);
+  background: transparent;
+  color: var(--color-element);
+}
+
+/* Dropzone */
+.upload-dropzone {
+  border: 2px dashed var(--color-element);
+  height: 180px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  color: var(--color-element);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: 0.25s ease;
+}
+
+.upload-dropzone.dragover {
+  background: rgba(0, 123, 255, 0.15);
+  border-color: #007bff;
+}
+
+/* File info */
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+}
+
+.remove-file {
+  cursor: pointer;
+  font-size: 1.4rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.remove-file:hover {
+  background: rgba(255, 0, 0, 0.2);
+}
+
+.header-block{
+  display: flex;
+  justify-content: space-between;
+}
+
+.arrow-up{
+  color: green;
+}
+
+.arrow-down{
+  color: red;
+}

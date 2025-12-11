@@ -15,4 +15,117 @@
     </svg>
   </div>
 
+  <div class="main">
+    <!--    <h1 class="title">КТП-{{ data?.id }} <span class="power">{{ totalPower | number:'1.1-1' }} МВт</span></h1>-->
+
+    <!-- Инверторы -->
+    <div class="grid">
+      @for (inv of data?.inverters; track inv.id) {
+        <div class="card" [class.off]="inv.mode !== 'on'">
+          <header>
+            <div class="name">{{ inv.device }}</div>
+            <!--            <div class="big-power">{{ inv.a_power | number:'1.0-0' }}<small>кВт</small></div>-->
+
+            <div class="status" [style.color]="inv.mode === 'on' ? '#22c55e' : '#64748b'">●</div>
+          </header>
+
+          <div class="inverter-info">
+            <div class="main-inverter-info">
+              <div class="main-row-interactive">
+                <div class="main-param">
+                  <span>Активна Р: {{ inv.a_power }} кВт</span>
+                  <span class="limit"> {{ inv.a_power_max }}</span>
+                </div>
+                <div class="main-param">
+                  <span>Реактивна Q: {{ inv.q_power }} кВАР</span>
+                  <span class="limit">{{ inv.q_power_max }}</span>
+                </div>
+                <div class="main-param">
+                  <span>cos φ: {{ inv.cos }}</span>
+                  <span class="limit">{{ inv.cos_max }}</span>
+                </div>
+              </div>
+              <div class="main-row">
+                <div class="main-param">
+                  <span>Потужність DC: {{ inv.p_pv }}кВт</span>
+                </div>
+
+                <div class="main-param">
+                  <span>Напруга DC: {{ inv.u_pv }} В</span>
+                </div>
+                <div class="main-param">
+                  <span>Струм DC: {{ inv.i_pv }} A</span>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="phase-info">
+              @for (p of ['a', 'b', 'c']; track p) {
+                <div class="row">
+                  <div class="param-title">
+                    <span>Фаза {{ p | uppercase }}</span>
+                  </div>
+                  <div class="param">
+                    <span>Активна Р: {{ inv["a_power_" + p] }} кВт</span>
+                  </div>
+                  <div class="param">
+                    <span>Реактивна Q: {{ inv["q_power_" + p] }} кВАР</span>
+                  </div>
+                  <div class="param">
+                    @if (p === 'a') {
+                      <span>U<sub>ab</sub>: {{ inv["u_" + "ab"] }} В</span>
+                    }
+                    @if (p === 'b') {
+                      <span>U<sub>bc</sub>: {{ inv["u_" + "bc"] }} В</span>
+                    }
+                    @if (p === 'c') {
+                      <span>U<sub>ca</sub>: {{ inv["u_" + "ca"] }} В</span>
+                    }
+                  </div>
+                  <div class="param">
+                    <span>Струм І: {{ inv["i_" + p] }} А</span>
+                  </div>
+                  <div class="param">
+                    <span>cos φ: {{ inv["cos_" + p] }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <footer>
+            <div class="temp">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2a3 3 0 00-3 3v7.5a5 5 0 106 0V5a3 3 0 00-3-3z"/>
+              </svg>
+              {{ inv.mod1_temp_igbt | number:'1.0-0' }}°C
+            </div>
+            <div class="Hz">
+              <span>{{ inv.f }} Гц</span>
+            </div>
+          </footer>
+        </div>
+      }
+    </div>
+    <div class="strings-chart-block">
+      <div class="strings-block">
+        @for (inv of data?.inverters; track inv.id) {
+          <div class="invertor-IDC-info">
+            <h3>{{ inv.device }}</h3>
+            @for (row of stringRows; track row) {
+              <div class="IDC-row">
+                @for (i of row; track i) {
+                  <div class="IDC-param">
+                    <span>Струм AB {{ i }}: {{ inv["i_br_" + i] }} A</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
 </div>

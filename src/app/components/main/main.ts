@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {Websocket} from '../../core/websocket';
+import {Websocket} from '../../core/services/websocket';
 
 @Component({
   selector: 'app-main',
@@ -26,7 +26,7 @@ export class Main implements OnChanges{
 
   ktp: any[] = [
     {
-      name: '3', id: 7, x: 50, y: 120, load_switch: true, earthing_switch_1: false, earthing_switch_2: true,
+      name: 'ІС №3', id: 7, x: 50, y: 120, load_switch: true, earthing_switch_1: false, earthing_switch_2: true,
       inverters: [
         {id: 701, name: '3.1', nominal_p: 1000, x: 75, y: 470, p: 4.765},
         {id: 702, name: '3.2', nominal_p: 1000, x: 375, y: 470, p: 3.765}
@@ -36,7 +36,7 @@ export class Main implements OnChanges{
       ]
     },
     {
-      name: '2', id: 8, x: 550, y: 120, load_switch: true, earthing_switch_1: false, earthing_switch_2: false,
+      name: 'ІС №2', id: 8, x: 550, y: 120, load_switch: true, earthing_switch_1: false, earthing_switch_2: false,
       inverters: [
         {id: 801, name: '2.1', nominal_p: 1000, x: 75, y: 470, p: 4.365},
         {id: 802, name: '2.2', nominal_p: 1000, x: 375, y: 470, p: 4.565}
@@ -46,7 +46,7 @@ export class Main implements OnChanges{
       ]
     },
     {
-      name: '1', id: 9, x: 1050, y: 120, load_switch: true, earthing_switch_1: false, earthing_switch_2: false,
+      name: 'ІС №1', id: 9, x: 1050, y: 120, load_switch: true, earthing_switch_1: false, earthing_switch_2: false,
       inverters: [
         {id: 901, name: '1.1', nominal_p: 1000, x: 75, y: 470, p: 4.765},
         {id: 902, name: '1.2', nominal_p: 1000, x: 375, y: 470, p: 4.665}
@@ -91,6 +91,18 @@ export class Main implements OnChanges{
 
   getKtp(id: any){
     return this.data?.ktp.find((k:any) => k.id === id);
+  }
+
+  getTotalPowerKtpInverters(inverters:any){
+    if (!inverters || !Array.isArray(inverters)){
+      return '---';
+    }
+    const total = inverters.reduce((sum, inv) => {
+      const power = inv?.a_power ?? inv?.p ?? 0;
+      return sum + Number(power);
+    }, 0);
+
+    return total > 0 ? `${total.toFixed(1)} кВт` : '—';
   }
 
   getInverterKtp(id: any){

@@ -25,19 +25,13 @@ export class Websocket {
     };
 
     this.ws.onclose = () => {
-      console.log('WebSocket отключён');
+      console.log('WebSocket вимкнено');
       setTimeout(() => this.connect(url), 2000); // reconnect
     };
 
     this.ws.onerror = (err) => {
-      console.error('WebSocket ошибка:', err);
+      console.error('WebSocket помилка:', err);
     };
-  }
-
-  send(data: any) {
-    if (this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(data));
-    }
   }
 
 

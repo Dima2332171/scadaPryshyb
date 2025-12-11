@@ -1,6 +1,5 @@
 :host {
   display: block;
-  width: 100vw;
   height: 100vh;
   background-color: var(--color-background);
   overflow: hidden;
@@ -19,4 +18,174 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
+
+.title {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0 0 60px;
+  color: var(--color-element);
+}
+
+.main {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 49%));
+  gap: 16px;
+  width: 100%;
+}
+
+.card {
+  background: var(--rect-color);
+  border-radius: 20px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--color-element);
+  transition: transform 0.25s ease, background 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  background: #1A212E;
+}
+.card.off {
+  opacity: 0.55;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+.name {
+  font-size: 18px;
+  font-weight: 600;
+}
+.status {
+  font-size: 20px;
+}
+
+.inverter-info {
+  display: grid;
+  /*grid-template-columns: 1fr;*/
+  gap: 16px;
+}
+
+/* ===== PV, MAIN, DC BLOCKS ===== */
+.main-inverter-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 18px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+}
+
+.main-row-interactive {
+  font-size: 17px;
+}
+
+.limit{
+  margin-left: 30px;
+  padding: 2px 5px;
+  border: 1px solid var(--color-element);
+  opacity: 60%;
+  cursor: pointer;
+}
+
+.main-row{
+  font-size: 15px;
+}
+
+.main-param {
+  padding: 5px 0;
+  opacity: 0.92;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* ===== AC PHASES ===== */
+.phase-info {
+  padding: 14px;
+  background: var(--rect-color);
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.row {
+  display: grid;
+  grid-auto-rows: auto;
+  gap: 4px 10px;
+  padding: 6px 0;
+}
+.param-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.param {
+  font-size: 15px;
+}
+
+/* ===== STRING CURRENTS ===== */
+.invertor-IDC-info {
+  padding: 10px;
+  background: var(--rect-color);
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2px;
+}
+
+.invertor-IDC-info h3 {
+  text-align: center;
+}
+
+.IDC-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 8px;
+}
+.IDC-param {
+  padding: 1px 0;
+  opacity: 0.9;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  opacity: 0.8;
+  margin-top: 16px;
+}
+.temp svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  fill: #fb923c;
+  vertical-align: -3px;
+}
+.line-u-info{
+  border-radius: 12px;
+  /*display: flex;*/
+  /*justify-content: space-between;*/
+}
+
+.strings-block{
+  display: flex;
+  color: var(--color-element);
+  font-size: 15px;
+}
+
 

@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+*{
+  box-sizing: border-box;
+}
+
 html, body, p {
   margin: 0;
   padding: 0;
@@ -16,6 +20,9 @@ html, body, p {
   --app-secondary-button-hover-background: #616161;
   --app-text-color: #34495e;
   --rect-color: rgba(0, 0, 0, 0.05);
+  --rect-color-shadow: rgba(46, 41, 41, 0.05);
+  --rect-color-label: #082547;
+
 }
 
 body.light-theme {
@@ -25,5 +32,7 @@ body.light-theme {
   --color-helper: #1a1a1a;
   --app-text-color: #e0e0e0;
   --rect-color: rgba(255,255,255,0.05);
+  --rect-color-shadow: rgb(255, 255, 255, 0.05);
+  --rect-color-label: #94a3b8;
   --app-secondary-button-hover-background: #727b87;
 }

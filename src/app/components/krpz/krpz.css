@@ -23,48 +23,48 @@
 .top-layout {
   display: flex;
   width: 100%;
-  height: 60%;   /* 55–60% */
-  gap: 16px;     /* расстояние между блоками */
-  /*margin-top: 70px;*/
+  height: 450px;
+  gap: 8px;
+  flex: 1;
 }
 
 .left-block {
-  width: 20%;
+  width: 15%;
   background: var(--rect-color);
   border-radius: 12px;
   position: relative;
-  overflow: hidden; /* важно! */
+  /*overflow: hidden;*/
 }
 
 .full-svg {
   position: absolute;
-  top: 0; left: 0;
+  /*top: 0; left: 0;*/
   width: 100%;
   height: 100%;
-  pointer-events: none; /* чтобы не мешал кликам */
+  pointer-events: none;
 }
 
 .right-block {
-  flex: 1;      /* занимает оставшееся пространство */
+  flex: 1;
   background: var(--rect-color);
   border-radius: 12px;
+  min-height: 0;
 }
 
-/* НИЖНИЙ БЛОК */
 .bottom-block {
-  margin-top: 16px;
-  height: 38%;  /* 35–40% */
+  margin-top: 5px;
   width: 100%;
   background: var(--rect-color);
   border-radius: 12px;
+  height: 50px;
 }
 
 .satec-card {
   height: 100%;
-  padding: 20px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   color: var(--color-element);
   font-family: 'Segoe UI', sans-serif;
 }
@@ -83,7 +83,7 @@
 .satec-main {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
   font-size: 18px;
   font-weight: 500;
 }
@@ -91,8 +91,8 @@
 .satec-row {
   display: flex;
   justify-content: space-between;
-  padding: 15px 12px;
-  background: rgba(255,255,255,0.05);
+  padding: 10px 12px;
+  background: var(--rect-color-shadow);
   border-radius: 8px;
 }
 
@@ -103,27 +103,44 @@
   align-items: stretch;
   flex: 1;
   min-height: 0;
+
 }
 
+
+.satec-u-line{
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
 
 .satec-phases {
   display: flex;
   gap: 20px;
-  align-items: flex-start;
 }
 
 .phase-card {
-  flex: 0 0 auto; ;
-  background: rgba(255,255,255,0.04);
-  border-radius: 16px;
+  background: var(--rect-color-shadow);
+  border-radius: 12px;
   padding: 10px;
-  backdrop-filter: blur(10px);
+  /*backdrop-filter: blur(10px);*/
   border: 1px solid rgba(255,255,255,0.08);
   color: var(--color-element);
   transition: all .25s ease;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
+  width: 100%;
+}
+
+.line-card{
+  background: var(--rect-color-shadow);
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--color-element);
+  transition: all .25s ease;
+  width: 100%;
+
 }
 
 .phase-card:hover {
@@ -137,11 +154,10 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 5px;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
 }
 
 .phase-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
 }
 
@@ -151,16 +167,18 @@
   opacity: 0.9;
 }
 
-.phase-cos.good {
-  color: #34d399;
-}
 
 .phase-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  row-gap: 3px;
-  column-gap: 12px;
-  font-size: 18px;
+  row-gap: 1px;
+  /*column-gap: 12px;*/
+  font-size: 16px;
+}
+
+.line-card-header{
+  display: flex;
+  margin-right: 10px;
 }
 
 .row {
@@ -168,7 +186,7 @@
 }
 
 .label {
-  color: #94a3b8;
+  color: var(--rect-color-label);
   font-weight: 500;
 }
 
@@ -178,21 +196,12 @@
   color: var(--color-element);
 }
 
-.row.warn .value {
-  color: #fbbf24;
-}
-
-.row.warn .value::after {
-  content: " ▲";
-  color: #ef4444;
-  font-size: 10px;
-}
 
 .satec-errors {
   flex: 1;
-  height: 250px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 16px;
+  height: 70%;
+  background: var(--rect-color-shadow);
+  border-radius: 12px;
   padding: 16px;
   display: flex;
   flex-direction: column;

@@ -1,15 +1,17 @@
 import {Component, OnInit, signal} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {Theme} from './core/theme';
-import { Websocket} from './core/websocket';
+import {Theme} from './core/services/theme';
+import { Websocket} from './core/services/websocket';
 import {Main} from './components/main/main';
-import {convertUtcToKyiv} from './core/date-time.utils';
+import {convertUtcToKyiv} from './core/services/date-time.utils';
 import {Krpz} from './components/krpz/krpz';
 import {Ktp} from './components/ktp/ktp';
+import {MvcControl} from './components/mvc-control/mvc-control';
+import {MvcEditDay} from './components/mvc-edit-day/mvc-edit-day';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Main, Krpz, Ktp],
+  imports: [RouterOutlet, Main, Krpz, Ktp, MvcControl, MvcEditDay],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -20,6 +22,8 @@ export class App implements OnInit {
   currentTheme: string;
   krpzId: any;
   ktpId: any;
+  mvcId: any;
+  day: any;
   realTimeData: any = null;
   constructor(
     private themeService: Theme,
@@ -49,6 +53,8 @@ export class App implements OnInit {
     this.viewContainer = event.view;
     this.krpzId = event.id;
     this.ktpId = event.id;
+    this.mvcId = event.id;
+    this.day = event.id;
   }
 
   get kyivTime(): string {

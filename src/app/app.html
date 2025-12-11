@@ -7,7 +7,7 @@
     </button>
   </div>
   <div class="time">
-    {{kyivTime}}
+    ФЕС Пришиб {{kyivTime}}
   </div>
 </header>
 
@@ -24,6 +24,14 @@
 
   @if(viewContainer=='ktp'){
     <app-ktp [id]="ktpId" (viewChange)="changeView($event)"></app-ktp>
+  }
+
+  @if(viewContainer=='mvc-control'){
+    <app-mvc-control [id]="mvcId" (viewChange)="changeView($event)"></app-mvc-control>
+  }
+
+  @if(viewContainer=='mvc-edit-day'){
+    <app-mvc-edit-day [day]="day" (viewChange)="changeView($event)"></app-mvc-edit-day>
   }
 
   <router-outlet></router-outlet>

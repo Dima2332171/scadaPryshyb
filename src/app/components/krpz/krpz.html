@@ -16,59 +16,45 @@
   </div>
 
   <div class="top-layout">
-      @if(satec){
-        <div class="left-block">
+    @if (satec) {
+      <div class="left-block">
         <svg class="full-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-          <text x="50" y="-13" text-anchor="middle" fill="var(--color-element)"
-                font-size="6">
+          <text x="50" y="-13" text-anchor="middle" fill="var(--color-element)" font-size="6">
             {{ data.id }}
           </text>
 
-          <line x1="0" y1="-10" x2="100" y2="-10"
-                stroke="var(--color-element)"
-                stroke-width="0.2"
-          />
+          <line x1="0" y1="-10" x2="100" y2="-10" stroke="var(--color-element)" stroke-width="0.2"/>
 
-          <circle cx='50' cy="-10" r="0.8" fill="var(--color-helper)" stroke="var(--color-element)" stroke-width="0.3" />
+          <circle cx='50' cy="-10" r="0.8" fill="var(--color-helper)" stroke="var(--color-element)" stroke-width="0.3"/>
 
-          <line x1="50" y1="-9" x2="50" y2="83"
-                stroke="var(--color-element)"
-                stroke-width="0.2"/>
+          <line x1="50" y1="-9" x2="50" y2="83" stroke="var(--color-element)" stroke-width="0.2"/>
 
-          <text x="41" y="28" text-anchor="middle" fill="var(--color-element)"
-                font-size="6">
+          <text x="41" y="28" text-anchor="middle" fill="var(--color-element)" font-size="6">
             {{ satec?.p }}
           </text>
 
-          <text x="41" y="34" text-anchor="middle" fill="var(--color-element)"
-                font-size="6">
+          <text x="41" y="34" text-anchor="middle" fill="var(--color-element)" font-size="6">
             {{ data?.relay_protection.status }}
           </text>
 
 
-          <path d="M50,85 L48.5,83 L51.5,83 Z"
-                fill="var(--rect-color)"
-                stroke="var(--color-element)"
-                stroke-width="0.25"
-                stroke-linejoin="round"/>
-
-
-          <!-- Пример: диагональ -->
-          <!-- <line x1="20" y1="10" x2="80" y2="90" stroke="#3b82f6" stroke-width="0.6"/> -->
+          <path d="M50,85 L48.5,83 L51.5,83 Z" fill="var(--rect-color)" stroke="var(--color-element)"
+                stroke-width="0.25" stroke-linejoin="round"/>
         </svg>
-        </div>
-      }
+      </div>
+    }
 
 
-    @if(satec){
+    @if (satec) {
       <div class="right-block">
         <div class="satec-card">
           <div class="satec-header">
             <div class="satec-title">SATEC PM130EH Plus</div>
-            <div class="satec-status" [class.ok]="satec?.status === '00'">Status: {{ satec?.status === '00' ? 'OK' : 'ALARM' }}</div>
+            <div class="satec-status" [class.ok]="satec?.status === '00'">
+              Status: {{ satec?.status === '00' ? 'OK' : 'ALARM' }}
+            </div>
           </div>
 
-          <!-- Основные параметры -->
           <div class="satec-main">
             <div class="satec-row">
               <span>Активна P</span><span>{{ satec?.p | number:'1.2-3' }} кВт</span>
@@ -90,64 +76,78 @@
             </div>
           </div>
 
-          <!-- Фазы A B C -->
+          <!-- Фази A B C -->
           <div class="satec-info">
-            <div class="satec-phases">
-              @for (ph of ['a','b','c']; track ph) {
-                <div class="phase-card">
+            <div class="line-phase-block">
 
-                  <div class="phase-card-header">
-                    <div class="phase-title">Фаза {{ ph | uppercase }}</div>
-                    <div class="phase-cos"
-                         [class.good]="(satec?.['cos_'+ph] ?? 0) > 0.95">
-                      cos φ: {{ satec?.['cos_'+ph] | number:'1.2-2' }}
+              <div class="satec-phases">
+                @for (ph of ['a', 'b', 'c']; track ph) {
+                  <div class="phase-card">
+
+                    <div class="phase-card-header">
+                      <div class="phase-title">Фаза {{ ph | uppercase }}</div>
+                      <div class="phase-cos">
+                        {{ satec?.['a_power_' + ph] | number:'1.1-1' }} кВт
+                      </div>
                     </div>
+
+                    <div class="phase-grid">
+
+                      <div class="row">
+                        <span class="label">cos φ: </span>
+                        <span class="value">{{ satec?.['cos_' + ph] | number:'1.2-2' }}</span>
+                      </div>
+
+                      <div class="row">
+                        <span class="label">Реактивна Q</span>
+                        <span class="value">{{ satec?.['q_power_' + ph] | number:'1.1-1' }} вар</span>
+                      </div>
+
+                      <div class="row">
+                        @if(ph === "a"){
+                          <span class="label">U<sub>ab</sub></span>
+                          <span class="value">{{ satec?.['u_' + "ab"] | number:'1.1-1' }} В</span>
+                        }
+                        @if(ph === "b"){
+                          <span class="label">U<sub>ab</sub></span>
+                          <span class="value">{{ satec?.['u_' + "bc"] | number:'1.1-1' }} В</span>
+                        }
+                        @if(ph === "c"){
+                          <span class="label">U<sub>ab</sub></span>
+                          <span class="value">{{ satec?.['u_' + "ca"] | number:'1.1-1' }} В</span>
+                        }
+                      </div>
+
+                      <div class="row">
+                        <span class="label">Фазна U</span>
+                        <span class="value">{{ satec?.['u_' + ph] | number:'1.0-0' }} В</span>
+                      </div>
+
+                      <div class="row">
+                        <span class="label">THD U</span>
+                        <span class="value">{{ satec?.['u_thd_' + ph] | number:'1.1-1' }} %</span>
+                      </div>
+
+                      <div class="row">
+                        <span class="label">THD I</span>
+                        <span class="value">{{ satec?.['i_thd_' + ph] | number:'1.1-1' }} %</span>
+                      </div>
+
+                      <div class="row">
+                        <span class="label">Струм I</span>
+                        <span class="value">{{ satec?.['i_' + ph] | number:'1.2-2' }} А</span>
+                      </div>
+
+
+<!--                      <div class="row">-->
+<!--                        <span class="label">k-factor</span>-->
+<!--                        <span class="value">{{ satec?.['k_factor_' + ph] | number:'1.1-1' }}</span>-->
+<!--                      </div>-->
+                    </div>
+
                   </div>
-
-                  <div class="phase-grid">
-                    <div class="row">
-                      <span class="label">Активна P</span>
-                      <span class="value">{{ satec?.['a_power_'+ph] | number:'1.1-1' }} кВт</span>
-                    </div>
-
-                    <div class="row">
-                      <span class="label">Реактивна Q</span>
-                      <span class="value">{{ satec?.['q_power_'+ph] | number:'1.1-1' }} вар</span>
-                    </div>
-
-                    <div class="row">
-                      <span class="label">Лінійна</span>
-                      <span class="value">{{ satec?.['u_line_'+ph] | number:'1.0-0' }} В</span>
-                    </div>
-
-                    <div class="row">
-                      <span class="label">Фазна U</span>
-                      <span class="value">{{ satec?.['u_'+ph] | number:'1.0-0' }} В</span>
-                    </div>
-
-                    <div class="row">
-                      <span class="label">THD U</span>
-                      <span class="value">{{ satec?.['u_thd_'+ph] | number:'1.1-1' }} %</span>
-                    </div>
-
-                    <div class="row">
-                      <span class="label">THD I</span>
-                      <span class="value">{{ satec?.['i_thd_'+ph] | number:'1.1-1' }} %</span>
-                    </div>
-
-                    <div class="row">
-                      <span class="label">Струм I</span>
-                      <span class="value">{{ satec?.['i_'+ph] | number:'1.2-2' }} А</span>
-                    </div>
-
-                    <div class="row">
-                      <span class="label">k-factor</span>
-                      <span class="value">{{ satec?.['k_factor_'+ph] | number:'1.1-1' }}</span>
-                    </div>
-                  </div>
-
-                </div>
-              }
+                }
+              </div>
             </div>
             <div class="satec-errors">
               <div class="satec-errors-title">Error Log</div>
@@ -175,7 +175,7 @@
 
   </div>
 
-  <div class="bottom-block">
-    Нижний блок
-  </div>
+<!--  <div class="bottom-block">-->
+<!--    Нижний блок-->
+<!--  </div>-->
 </div>

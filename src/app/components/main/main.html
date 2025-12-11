@@ -92,7 +92,7 @@
           }
 
           <g class="satec-krpz" (click)="openView('krpz', item.id)">
-            <rect x="10" y="70" width="60" height="50" fill="transparent" />
+            <rect x="10" y="76" width="60" height="50" fill="transparent" />
             <text x="40" y="90" text-anchor="middle" fill="var(--color-element)" [attr.font-size]="fontSizePx">
               {{ getKrpz(item.id)?.satec.p ?? "---" }}
             </text>
@@ -121,6 +121,9 @@
     @for (item of ktp; track item.id) {
       <g [attr.transform]="'translate(' + item.x + ',' + item.y + ')'">
         <rect width="450" height="550" fill="transparent" rx="5" stroke="var(--color-element)" stroke-dasharray="5,5"></rect>
+        <text x="30" y="20" text-anchor="middle" fill="var(--color-element)" font-size="16">
+          {{ item.name }}
+        </text>
         <circle cx="225" cy="52" r="2" fill="var(--color-element)" stroke="var(--color-element)"/>
         <line x1="215" y1="52" x2="380" y2="52" stroke="var(--color-element)" stroke-width="1"/>
         <circle cx="370" cy="52" r="2" fill="var(--color-element)" stroke="var(--color-element)"/>
@@ -208,9 +211,6 @@
 
 
 
-
-
-
         @for (transformer of item.transformers; track transformer.id) {
           <g [attr.transform]="'translate(' + transformer.x + ',' + transformer.y + ')'">
             <circle cy="4" r="20" fill="transparent" stroke="var(--color-element)"/>
@@ -225,6 +225,11 @@
 
 
 
+
+        <text x="225" y="380" text-anchor="middle" fill="var(--color-element)"
+              [attr.font-size]="fontSizePx">
+          {{getTotalPowerKtpInverters(getKtp(item.id)?.inverters)}}
+        </text>
         @for (inverter of item.inverters; track inverter.id) {
 
           <g [attr.transform]="'translate(' + (inverter.x) + ',' + (inverter.y) + ')'" (click)="openView('ktp', item.id)">
@@ -266,7 +271,7 @@
 
 
         @for (inverter of item.inverters; track inverter.id) {
-          <g [attr.transform]="'translate(' + inverter.x + ',' + inverter.y + ')'">
+          <g [attr.transform]="'translate(' + inverter.x + ',' + inverter.y + ')'" (click)="openView('mvc-control', inverter.id)">
             <g transform="scale(1.6)">
               <rect x="-22" y="-22" width="44" height="44" fill="transparent" stroke="var(--color-element)"
                     stroke-width="1"/>
