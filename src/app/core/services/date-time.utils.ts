@@ -54,8 +54,7 @@ export function convertKyivToUtc(kyiv: string, hasTime: boolean = true): string 
       return '-';
     }
 
-    // Возвращаем ISO без Z (UTC)
-    return kyivDate.toISOString().slice(0, 19);
+    return kyivDate.toISOString().split('.')[0] + 'Z';
   } catch (e) {
     console.warn('kyivToUtc error:', e, kyiv);
     return '-';

@@ -1,7 +1,11 @@
-import {Component, EventEmitter, OnInit, Output, ViewChildren} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChildren} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ControlStation} from '../../core/services/control-station';
 import {convertUtcToKyiv} from '../../core/services/date-time.utils';
+import {WindowVisibility} from '../../core/services/window-visibility';
+import {Subscription} from 'rxjs';
+import {DialogConfirmDelete} from '../dialog-confirm-delete/dialog-confirm-delete';
+import {MatDialog} from '@angular/material/dialog';
 
 
 @Component({
@@ -12,11 +16,13 @@ import {convertUtcToKyiv} from '../../core/services/date-time.utils';
   templateUrl: './mvc-control.html',
   styleUrl: './mvc-control.css',
 })
-export class MvcControl implements OnInit {
+export class MvcControl implements OnInit, OnDestroy {
   @Output() viewChange = new EventEmitter<any>();
   settingsForm!: FormGroup;
   daysJournal: any = [];
-
+  private focusSubscription!: Subscription;
+  isLoading: boolean = false;
+  hasOverrides: boolean = false;
   workModes = [
     { value: 'default', label: 'Оберіть режим'},
     { value: 'main', label: 'Головний'},
@@ -26,11 +32,12 @@ export class MvcControl implements OnInit {
     { value: 'pv_limit_full_charge', label: 'PV limit full charge' },
     { value: 'max_pv_full_charge', label: 'Max Pv full charge' },
   ];
-  currentActiveInterval: any = null;
-  private isFormInitialized = false;
+
   constructor(
     private fb: FormBuilder,
     private controlStationService: ControlStation,
+    private visibilityService: WindowVisibility,
+    private dialog: MatDialog,
   )
   {}
 
@@ -57,14 +64,42 @@ export class MvcControl implements OnInit {
       bess2Discharge: [{ value: 0 }, [Validators.min(0)]],
     })
 
+    this.loadData();
+
+    this.focusSubscription = this.visibilityService.windowFocus$.subscribe(()=>{
+      console.log('Focus Subscription');
+      this.loadData();
+    })
+
     this.settingsForm.get('workMode')!.valueChanges.subscribe(mode => {
       this.applyPresetForMode(mode);
     });
-    this.controlStationService.getJournalToday().subscribe((data: any) => {
-      console.log(data);
-      this.mergeJournalData(data);
-    })
   }
+
+  ngOnDestroy(): void {
+    if (this.focusSubscription) {
+      this.focusSubscription.unsubscribe();
+    }
+  }
+
+
+  loadData() {
+    this.isLoading = false;
+    this.controlStationService.getJournalToday().subscribe({
+      next: (data) => {
+        this.mergeJournalData(data);
+        this.isLoading = true;
+
+      },
+      error: () => {
+        this.isLoading = true;
+      }
+    });
+  }
+
+  // checkOverrides() {
+  //   this.hasOverrides = this.daysJournal.data.some((item: any) => item.modify);
+  // }
 
   private generateInitialDays() {
     this.daysJournal = [];
@@ -93,19 +128,76 @@ export class MvcControl implements OnInit {
       }
     });
     this.updateValuesForm()
+    // this.checkOverrides()
   }
 
 
   // Отправка формы
   onSubmit(): void {
-    if (this.settingsForm.valid) {
-      console.log('Новые уставки:', this.settingsForm.getRawValue());
-      // Здесь будет твой HTTP-запрос:
-      // this.settingsService.applySettings(this.settingsForm.value).subscribe(...)
+    const formValue = this.settingsForm.getRawValue();
 
-      this.settingsForm.markAsPristine();
-      alert('Налаштування успішно застосовано!');
+    const startTime = this.getStartTimeForActiveRange();
+    const endTime = this.getEndTimeForActiveRange();
+
+    if (!startTime || !endTime) {
+      alert('Помилка: не вдалося визначити поточний активний діапазон.');
+      return;
     }
+
+    // Формируем один объект Interval
+    const interval: any = {
+      startTime: startTime,
+      endTime: endTime,
+      priorityGrid: formValue.priorityGrid ?? false,
+      chargeFromGrid: formValue.chargeFromGrid ?? 0,
+      dischargeToGrid: formValue.dischargeToGrid ?? 0,
+      priorityPv: formValue.priorityPv ?? false,
+      pv: formValue.pv ?? 0,
+      priorityBess: formValue.priorityBess ?? false,
+      bess1Charge: formValue.bess1Charge,
+      bess1Discharge: formValue.bess1Discharge,
+      bess2Charge: formValue.bess2Charge,
+      bess2Discharge: formValue.bess2Discharge,
+      imbalances: formValue.imbalances ?? false,
+    };
+
+    // Если в форме есть лишние поля (например workMode) — удаляем их
+    delete interval.workMode; // ← вот так удаляешь свойство, если оно есть
+
+    const today = new Date();
+    const dateStr = today.toISOString().split('T')[0]; // "2025-12-16"
+
+    const payload = {
+      date: dateStr,
+      data: [interval]  // массив с одним объектом
+    };
+
+    console.log('Відправляємо на сервер:', payload);
+
+    this.controlStationService.saveOverrideDay(payload).subscribe({
+      next: () => {
+        console.log(`Журнал за ${payload.date} успішно відкориговано.`);
+        this.loadData();
+      },
+      error: (err) => {
+        console.error('Помилка коригування журналу:', err);
+      },
+    });
+  }
+
+  getStartTimeForActiveRange() {
+    return new Date().toISOString().split('.')[0] + 'Z'
+  }
+
+  getEndTimeForActiveRange(){
+    for (const day of this.daysJournal) {
+      const activeInterval = day.data.find((interval: any) => interval.isActive === true);
+
+      if (activeInterval) {
+        return activeInterval.endTime;
+      }
+    }
+    return null;
   }
 
   resetForm(): void {
@@ -292,16 +384,39 @@ export class MvcControl implements OnInit {
 
   }
 
-  updateJournal(){
-    this.isFormInitialized = false;
-    this.controlStationService.getJournalToday().subscribe((data: any) => {
-      console.log(data);
-      this.mergeJournalData(data);
-    })
-  }
-
   isIntervalActive(item: any) {
    return item.isActive
+  }
+
+  isIntervalModifyActive(item: any) {
+    return item.modify && item.isActive
+  }
+
+  onDeleteModifyRange(date: string){
+    console.log(date)
+
+    const dialogRef = this.dialog.open(DialogConfirmDelete, {
+      data: {
+        title: 'Підтвердження видалення ручної уставки',
+        message: `Ви впевнені, що хоче видалити поточну уставку, яка була встановлена вручну? Ця дія незворотна.`
+      },
+      width: 'auto',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.controlStationService.deleteOverrideDay(date).subscribe({
+          next: () => {
+            console.log(`Журнал за ${date} успішно видалено.`);
+            this.loadData();
+          },
+          error: (err) => {
+            console.error('Помилка видалення журналу:', err);
+            alert(`Неможливо видалити журнал: ${err.message || 'Помилка мережі/сервера'}`);
+          },
+        });
+      }
+    })
   }
 
   protected readonly convertUtcToKyiv = convertUtcToKyiv;

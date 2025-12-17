@@ -37,9 +37,7 @@ export class App implements OnInit {
 
   ngOnInit() {
     this.ws.data$.subscribe(data => {
-      if (data?.type === 'realtime'){
         this.realTimeData = data;
-      }
     })
     this.ws.connect();
   }

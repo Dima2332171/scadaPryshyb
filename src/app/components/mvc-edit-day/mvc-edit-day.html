@@ -14,71 +14,121 @@
     <div class="mvc-edit-container">
       <div class="left-block">
 
-        @if (setPointToday) {
-          <div class="header-block">
-            <div class="receivedAt">
-              Встановлено о: <span>{{convertUtcToKyiv(setPointToday.updatedAt)}} </span>
-            </div>
-            <div class="updateAt">
-              Останнє оновлення: <span> {{convertUtcToKyiv(setPointToday.receivedAt)}} </span>
-            </div>
-            <div class="button-update">
-              <button (click)="refreshSetPointData()">Оновити</button>
-            </div>
-            <div class="edit">
-              <button>Редагувати</button>
+        @if (!isLoading) {
+          <div class="loader-container">
+            <div class="spinner">
+              <div class="lds-spinner">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
             </div>
           </div>
+        }
+        @if (isLoading) {
+          @if(notFound){
+            <div class="no-data-message">
+              <h3>Журнал за {{ day }} не знайдено</h3>
+              <p>Ви можете створити нові уставки, завантаживши Excel-файл праворуч.</p>
+            </div>
+          } @else if (setPointToday) {
+            <div class="header-block">
 
-          <table class="setpoints-table">
-            <thead>
-            <tr>
-              <th>Час</th>
-              <th>Grid*</th>
-              <th>Мережа</th>
-              <th>PV*</th>
-              <th>PV</th>
-              <th>Небал.</th>
-              <th>BESS*</th>
-              <th>BESS1</th>
-              <th>BESS2</th>
-            </tr>
-            </thead>
+              <div class="receivedAt">
+                <span>Журнал змінено о: {{ convertUtcToKyiv(setPointToday.updatedAt) }} </span>
+              </div>
 
-            <tbody>
-              @for(item of setPointToday.data; track item.startTime) {
+              <div class="updateAt">
+                <svg class="icon pulse" viewBox="0 0 24 24">
+                  <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                <span> {{ convertUtcToKyiv(setPointToday.receivedAt, 'short') }} </span>
+              </div>
+              <div class="button-update">
+                <button class="icon-btn refresh" (click)="loadData()">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="edit">
+                <button class="icon-btn edit" (click)="showEditPanel(setPointToday)">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="delete">
+                <button class="icon-btn delete" (click)="onDeleteJournal(day)">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrapper">
+              <table class="setpoints-table">
+                <thead>
                 <tr>
-                  <td>{{ getLocalTime(item.startTime) }} – {{ getLocalTime(item.endTime) }}</td>
-                  <td>{{ item.priorityGrid ? 'Так' : 'Ні' }}</td>
-                  <td>
-                    <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.dischargeToGrid }}<br>
-                    <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.chargeFromGrid }}
-                  </td>
-                  <td>{{ item.priorityPv ? 'Так' : 'Ні' }} </td>
-                  <td>
-                    {{ item.pv }}
-                  </td>
-                  <td>
-                    {{ item.imbalances ? 'Так' : 'Ні' }}
-                  </td>
-                  <td>
-                    {{ item.priorityBess ? 'Так' : 'Ні' }}
-                  </td>
-                  <td>
-                    <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess1Discharge }}<br>
-                    <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess1Charge }}
-                  </td>
-                  <td>
-                    <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess2Discharge }}<br>
-                    <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess2Charge }}
-                  </td>
+                  <th>Час</th>
+                  <th>Grid*</th>
+                  <th>Мережа</th>
+                  <th>PV*</th>
+                  <th>PV</th>
+                  <th>Небал.</th>
+                  <th>BESS*</th>
+                  <th>BESS1</th>
+                  <th>BESS2</th>
                 </tr>
-              }
-            </tbody>
-          </table>
+                </thead>
 
-        } @else {
-          <span>Дані уставок за цей день - відсутні.</span>
+                <tbody>
+                  @for (item of setPointToday.data; track item.startTime) {
+                    <tr [class.active-interval]="isIntervalActive(item)" [class.active-modify-interval]="isIntervalModifyActive(item)">
+                      <td>{{ getLocalTime(item.startTime) }} – {{ getLocalTime(item.endTime) }}</td>
+                      <td>{{ item.priorityGrid ? 'Так' : 'Ні' }}</td>
+                      <td>
+                        <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.dischargeToGrid }}<br>
+                        <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.chargeFromGrid }}
+                      </td>
+                      <td>{{ item.priorityPv ? 'Так' : 'Ні' }}</td>
+                      <td>
+                        {{ item.pv }}
+                      </td>
+                      <td>
+                        {{ item.imbalances ? 'Так' : 'Ні' }}
+                      </td>
+                      <td>
+                        {{ item.priorityBess ? 'Так' : 'Ні' }}
+                      </td>
+                      <td>
+                        <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess1Discharge }}<br>
+                        <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess1Charge }}
+                      </td>
+                      <td>
+                        <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess2Discharge }}<br>
+                        <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess2Charge }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
         }
 
       </div>
@@ -89,7 +139,7 @@
         <button class="btn-secondary" (click)="downloadFile()">
           Завантажити поточний Excel
         </button>
-        <hr>
+
 
         <div class="upload-dropzone"
              (dragover)="onDragOver($event)"
@@ -101,7 +151,7 @@
 
             Перетягніть файл Excel сюди або виберіть вручну <br>
             <button class="btn-secondary" (click)="fileInput.click()">Вибрати файл</button>
-            <input type="file" #fileInput (change)="onFileSelected($event)" accept=".xlsx,.xls" hidden />
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept=".xlsx,.xls" hidden/>
 
           } @else {
 

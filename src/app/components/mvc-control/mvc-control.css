@@ -258,9 +258,86 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 18px 24px;
+
 }
 
+.header-left {
+  display: flex;
+  gap: 8px;
+}
+
+.day-title {
+  font-size: 23px;
+  font-weight: 600;
+  color: var(--color-element, #90caf9);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+
+.status.live {
+  color: #81c784;
+  font-weight: 500;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  opacity: 0.9;
+}
+
+.pulse {
+  animation: heartbeat 3s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Кнопки справа */
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-element);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(10px);
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.icon-btn.refresh:hover {
+  color: #90caf9;
+}
+
+.icon-btn.edit:hover {
+  color: #ffb74d;
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
 
 .day-table {
   flex: 1;
@@ -326,35 +403,7 @@
 .arrow-down{
   color: red;
 }
-/*.day-table tbody::-webkit-scrollbar,*/
-/*.result-block::-webkit-scrollbar {*/
-/*  width: 8px;                    !* тонкий *!*/
-/*  !*height: 8px;*!*/
-/*}*/
 
-/*.day-table tbody::-webkit-scrollbar-track,*/
-/*.result-block::-webkit-scrollbar-track {*/
-/*  !*background: transparent;      !* фон прозрачный *!*!*/
-/*  !*border-radius: 10px;*!*/
-/*}*/
-
-/*.day-table tbody::-webkit-scrollbar-thumb,*/
-/*.result-block::-webkit-scrollbar-thumb {*/
-/*  background: rgba(255, 255, 255, 0.25);*/
-/*  border-radius: 10px;*/
-/*  border: 2px solid transparent;     !* ← ВОТ МАГИЯ! *!*/
-/*  background-clip: content-box;        !* ← не даёт скроллу "съедать" ширину *!*/
-/*  transition: all 0.3s ease;*/
-/*}*/
-
-/*.day-table tbody::-webkit-scrollbar-thumb:hover,*/
-/*.result-block::-webkit-scrollbar-thumb:hover {*/
-/*  background: rgba(255, 255, 255, 0.5);*/
-/*  border-width: 1px;*/
-/*  background-clip: content-box;*/
-/*}*/
-
-/* Для Firefox */
 .day-table tbody,
 .result-block {
   scrollbar-width: thin;
@@ -365,5 +414,144 @@ tr.active-interval {
   animation: glow 3s ease-in-out infinite alternate;
   box-shadow: inset 0 0 10px rgba(76, 192, 175, 192);
   border-radius: 5px;
+}
+
+tr.active-modify-interval{
+  box-shadow: inset 0 0 10px rgb(192, 76, 111);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  opacity: 0.3;
+  margin-bottom: 12px;
+}
+
+.empty-text {
+  font-weight: 500;
+  color: var(--color-element);
+}
+
+
+.lds-spinner,
+.lds-spinner div,
+.lds-spinner div:after {
+  box-sizing: border-box;
+}
+
+.lds-spinner {
+  color: currentColor;
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-spinner div {
+  transform-origin: 40px 40px;
+  animation: lds-spinner 1.2s linear infinite;
+}
+
+.lds-spinner div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 3.2px;
+  left: 36.8px;
+  width: 6.4px;
+  height: 17.6px;
+  border-radius: 20%;
+  background: currentColor;
+}
+
+.lds-spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+
+.lds-spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+
+.lds-spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+
+.lds-spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+
+.lds-spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+
+.lds-spinner div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+
+.lds-spinner div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+
+.lds-spinner div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+
+.lds-spinner div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+
+.lds-spinner div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+
+.lds-spinner div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+
+.lds-spinner div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+
+@keyframes lds-spinner {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+}
+
+.icon-btn.delete:hover {
+  background: rgba(255, 0, 0, 0.2); /* Червоний фон при наведенні */
+  color: #ff8a80; /* Світло-червоний колір іконки */
+  /*transform: translateY(-3px) scale(1.08);*/
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 

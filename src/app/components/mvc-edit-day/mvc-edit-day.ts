@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,6 +6,10 @@ import {convertKyivToUtc, convertUtcToKyiv} from '../../core/services/date-time.
 import {DialogWarning} from '../dialog-warning/dialog-warning';
 import {DialogAccept} from '../dialog-accept/dialog-accept';
 import {ControlStation} from '../../core/services/control-station';
+import {WindowVisibility} from '../../core/services/window-visibility';
+import {Subscription} from 'rxjs';
+import {DialogConfirmDelete} from '../dialog-confirm-delete/dialog-confirm-delete';
+import {DialogEditJournal} from '../dialog-edit-journal/dialog-edit-journal';
 
 
 @Component({
@@ -13,27 +17,62 @@ import {ControlStation} from '../../core/services/control-station';
   templateUrl: './mvc-edit-day.html',
   styleUrl: './mvc-edit-day.css',
 })
-export class MvcEditDay implements OnInit {
+export class MvcEditDay implements OnInit, OnDestroy {
   @Output() viewChange = new EventEmitter<any>();
   @Input() public day: any;
 
   selectedFile: File | null = null;
   isDragOver = false;
   parsedData: any | null = null;
-  setPointToday: any;
+  setPointToday: any = null;
+  private focusSubscription!: Subscription;
+  isLoading = false;
+  notFound: boolean = false;
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
     private controlStationService: ControlStation,
+    private visibilityService: WindowVisibility,
   ) {
   }
 
 
   ngOnInit() {
     console.log(this.day);
-    this.controlStationService.getSetPointToday(this.day).subscribe((data: any) => {
-      this.setPointToday = data
-      console.log(data);
+    this.loadData();
+    this.focusSubscription = this.visibilityService.windowFocus$.subscribe(()=>{
+      console.log('Focus Subscription');
+      this.loadData();
+    })
+  }
+
+  ngOnDestroy() {
+    if(this.focusSubscription) {
+      this.focusSubscription.unsubscribe();
+    }
+  }
+
+  loadData(): void {
+    this.isLoading = false;
+    this.controlStationService.getSetPointToday(this.day).subscribe({
+      next: data => {
+        this.setPointToday = data
+        console.log(data);
+        this.isLoading = true;
+        this.notFound = false;
+      },
+      error: (err) => {
+        if (err.status === 404){
+          this.notFound = true;
+          this.isLoading = true;
+        } else {
+          console.error('Помилка завантаження даних:', err);
+          this.isLoading = true;
+          this.notFound = false;
+        }
+        this.isLoading = true;
+      }
+
     })
   }
 
@@ -331,9 +370,18 @@ export class MvcEditDay implements OnInit {
         console.log('Успішне підтвердження. Оновлюємо дані...');
 
         // ВИКЛИКАЄМО ВАШ ЗАПИТ НА ОНОВЛЕННЯ
-        this.refreshSetPointData();
+        this.loadData();
       }
     });
+  }
+
+  showEditPanel(parsedData: any) {
+    console.log(parsedData);
+    const dialogRef = this.dialog.open(DialogEditJournal,{
+      width: 'auto',
+      maxWidth: '90vw',
+      data: parsedData,
+    })
   }
 
   getLocalTime(time: any) {
@@ -341,12 +389,42 @@ export class MvcEditDay implements OnInit {
     return full.split(' ')[1].substring(0, 5); // "HH:mm"
   }
 
-  refreshSetPointData() {
+  isIntervalActive(item: any) {
+    return item.isActive
+  }
 
-    this.controlStationService.getSetPointToday(this.day).subscribe((data: any) => {
-      this.setPointToday = data
-      console.log('Дані уставок оновлено:', data);
+  isIntervalModifyActive(item: any) {
+    return item.modify && item.isActive
+  }
+
+  onDeleteJournal(date: string): void {
+    if (!date){
+      console.error("Дата для видалення не визначена")
+      return;
+    }
+
+    const dialogRef = this.dialog.open(DialogConfirmDelete, {
+      data: {
+        title: 'Підтвердження видалення',
+        message: `Ви впевнені, що хоче видалити журнал уставок за ${date}? Ця дія незворотна.`
+      },
+      width: 'auto',
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.controlStationService.deleteJournalDay(date).subscribe({
+          next: () => {
+            console.log(`Журнал за ${date} успішно видалено.`);
+            this.loadData();
+          },
+          error: (err) => {
+            console.error('Помилка видалення журналу:', err);
+            alert(`Неможливо видалити журнал: ${err.message || 'Помилка мережі/сервера'}`);
+          },
+        });
+      }
+    })
   }
 
   protected readonly convertUtcToKyiv = convertUtcToKyiv;

@@ -9,6 +9,7 @@ import {
 import {MatButton} from '@angular/material/button';
 import {convertUtcToKyiv} from '../../core/services/date-time.utils';
 import {HttpClient} from '@angular/common/http';
+import {ControlStation} from '../../core/services/control-station';
 
 @Component({
   selector: 'app-dialog-accept',
@@ -26,7 +27,7 @@ export class DialogAccept implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogAccept>,
     @Inject(MAT_DIALOG_DATA) public data: { parsedData: any },
-    private http: HttpClient
+    private controlService: ControlStation
   ) {}
 
   ngOnInit() {
@@ -40,19 +41,18 @@ export class DialogAccept implements OnInit {
 
     const payload = this.data.parsedData; // уже в нужном формате!
 
-    this.http
-      .post('http://localhost:8000/api/save-journal-day', payload)
-      .subscribe({
-        next: (res: any) => {
-          console.log('Уставки успішно збережено!', res);
-          this.dialogRef.close(true); // закрываем с успехом
-        },
-        error: (err) => {
-          console.error('Помилка збереження:', err);
-          alert('Не вдалося зберегти уставки. Перевірте бекенд.');
-          this.isSending = false;
-        },
-      });
+    this.controlService.saveJournalDay(payload).subscribe({
+      next: (res: any) => {
+        console.log('Уставки успішно збережено!', res);
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        console.error('Помилка збереження:', err);
+        alert('Не вдалося зберегти уставки. Перевірте бекенд або мережу.');
+        this.isSending = false;
+        this.dialogRef.close(false);
+      }
+    });
   }
 
   onCancel() {

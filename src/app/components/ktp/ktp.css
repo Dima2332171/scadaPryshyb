@@ -65,9 +65,6 @@ header {
   font-size: 18px;
   font-weight: 600;
 }
-.status {
-  font-size: 20px;
-}
 
 .inverter-info {
   display: grid;

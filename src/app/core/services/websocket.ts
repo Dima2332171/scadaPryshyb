@@ -19,9 +19,7 @@ export class Websocket {
 
     this.ws.onmessage = (event) => {
       const msg = JSON.parse(event.data);
-      if (msg.type === 'realtime') {
         this.dataSubject.next(msg);
-      }
     };
 
     this.ws.onclose = () => {

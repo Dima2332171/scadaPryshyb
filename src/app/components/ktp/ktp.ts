@@ -36,7 +36,6 @@ export class Ktp implements OnDestroy, OnChanges {
 
       this.ws.data$
         .pipe(
-          filter((d: any) => d?.type === 'realtime'),
           takeUntil(this.destroy$)
         )
         .subscribe(d => {
