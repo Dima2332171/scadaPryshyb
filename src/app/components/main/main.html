@@ -286,10 +286,7 @@
 
             </g>
             <!--Покази інвертора-->
-            <text x="0" y="80" text-anchor="middle" fill="var(--color-element)"
-                  [attr.font-size]="fontSizePx">
-              {{ inverter.p }}
-            </text>
+
           </g>
 
 
@@ -298,6 +295,29 @@
 
 
         }
+
+
+        <text x="360" y="20" text-anchor="middle" fill="var(--color-element)">
+          status: {{getMvcEssStatus(item.id)}}
+        </text>
+
+        <text x="200" y="20" text-anchor="middle" fill="var(--color-element)">
+          {{getMvcEssStatus(item.id)}}
+        </text>
+
+
+        <text x="60" y="20" text-anchor="middle" fill="var(--color-element)">
+          {{getMvcGridMode(item.id)}}
+        </text>
+
+        <text x="220" y="410" text-anchor="middle" fill="var(--color-element)" [attr.font-size]="fontSizePx">
+          {{getMvcActivePower(item.id)}} кВт
+        </text>
+
+          <text x="220" y="450" text-anchor="middle" fill="var(--color-element)" [attr.font-size]="fontSizePx">
+            {{getMvcSoc(item.id)}} %
+          </text>
+
 
         @for (bess of item.bess; track bess.id) {
           <g [attr.transform]="'translate(' + bess.x + ',' + bess.y + ')'">

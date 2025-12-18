@@ -59,7 +59,11 @@ export class Main implements OnChanges{
 
   mvc: any[] = [
     {
-      name: '1', id: 1, x: 1600, y: 120, soc: 90,
+      name: '1',
+      id: 10,
+      x: 1600,
+      y: 120,
+      soc: 90,
       bess: [
         {name: 'bess', id: 1001, x: 12, y: 440},
         {name: 'bess', id: 1002, x: 340, y: 440},
@@ -91,6 +95,38 @@ export class Main implements OnChanges{
 
   getKtp(id: any){
     return this.data?.ktp.find((k:any) => k.id === id);
+  }
+
+  getMvcSoc(id: number): any {
+    const mvcItem = this.data?.mvc?.find((m: any) => m.id === id);
+    if (!mvcItem || !mvcItem.local_controller) {
+      return '--'; // или '--', если хочешь показать отсутствие данных
+    }
+    return mvcItem.local_controller.soc;
+  }
+
+  getMvcActivePower(id: number): any {
+    const mvcItem = this.data?.mvc?.find((m: any) => m.id === id);
+    if (!mvcItem || !mvcItem.local_controller) {
+      return "--"; // или '--', если хочешь показать отсутствие данных
+    }
+    return mvcItem.local_controller.a_power ?? 0;
+  }
+
+  getMvcGridMode(id: number): any {
+    const mvcItem = this.data?.mvc?.find((m: any) => m.id === id);
+    if (!mvcItem || !mvcItem.local_controller) {
+      return "--"; // или '--', если хочешь показать отсутствие данных
+    }
+    return mvcItem.local_controller.grid_mode;
+  }
+
+  getMvcEssStatus(id: number): any {
+    const mvcItem = this.data?.mvc?.find((m: any) => m.id === id);
+    if (!mvcItem || !mvcItem.local_controller) {
+      return "--"; // или '--', если хочешь показать отсутствие данных
+    }
+    return mvcItem.local_controller.ess_status;
   }
 
   getTotalPowerKtpInverters(inverters:any){

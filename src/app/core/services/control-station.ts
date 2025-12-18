@@ -33,4 +33,14 @@ export class ControlStation {
   saveOverrideDay(payload: any): Observable<any>{
     return this.http.post<any>(`${this.baseUrl}/save-override-day`,payload);
   }
+
+  deleteJournalInterval(date: string, startTime: string, endTime: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/delete-journal-interval/${date}`,
+      {
+        params: {
+          start_time: startTime,
+          end_time: endTime
+        }
+      });
+  }
 }

@@ -1,1 +1,78 @@
-<p>dialog-edit-journal works!</p>
+<div class="container">
+  <h2 mat-dialog-title>Коригування журнала</h2>
+
+  <mat-dialog-content>
+    <div class="date">
+      <strong>Дата:</strong> {{ data.date }}
+    </div>
+
+    <table class="preview-table">
+      <thead>
+      <tr>
+        <th>Початок</th>
+        <th>Кінець</th>
+        <th>Пріор. мережа</th>
+        <th>Заряд з мережі</th>
+        <th>Розряд в мережу</th>
+        <th>Пріор. Pv</th>
+        <th>PV</th>
+        <th>Пріор. Bess</th>
+        <th>B1 Charge</th>
+        <th>B1 Discharge</th>
+        <th>B2 Charge</th>
+        <th>B2 Discharge</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (row of localData; track $index) {
+          <tr [class.active-interval]="isIntervalActive(row)"
+              [class.active-modify-interval]='isIntervalModifyActive(row)'>
+            <td>{{ convertUtcToKyiv(row.startTime) }}</td>
+            <td>{{ convertUtcToKyiv(row.endTime) }}</td>
+            <td>{{ row.priorityGrid ? 'Так' : 'Ні' }}</td>
+            <td><input type="number" [(ngModel)]="row.chargeFromGrid" class="number-input" step="100"></td>
+            <td><input type="number" [(ngModel)]="row.dischargeToGrid" class="number-input" step="100"></td>
+            <td>{{ row.priorityPv ? 'Так' : 'Ні' }}</td>
+            <td><input type="number" [(ngModel)]="row.pv" class="number-input" step="10"></td>
+            <td>{{ row.priorityBess ? 'Так' : 'Ні' }}</td>
+            <td><input type="number" [(ngModel)]="row.bess1Charge" class="number-input" step="100"></td>
+            <td><input type="number" [(ngModel)]="row.bess1Discharge" class="number-input" step="100"></td>
+            <td><input type="number" [(ngModel)]="row.bess2Charge" class="number-input" step="100"></td>
+            <td><input type="number" [(ngModel)]="row.bess2Discharge" class="number-input" step="100"></td>
+            <td>
+              @if(isIntervalModify(row)){
+                <button class="icon-btn delete">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                  </svg>
+                </button>
+              }@else{
+                <button class="icon-btn delete-green" (click)="deleteJournalInterval($index)">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                  </svg>
+                </button>
+              }
+
+          </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Відмінити</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onConfirm()"
+      [disabled]="isSending"
+    >
+      {{ isSending ? 'Збереження...' : 'Підтвердити' }}
+    </button>
+  </mat-dialog-actions>
+</div>
