@@ -14,6 +14,7 @@ export class Websocket {
     this.ws = new WebSocket(url);
 
     this.ws.onopen = () => {
+      this.ws.send(JSON.stringify({"poll":true}))
       console.log('Websocket opened');
     }
 

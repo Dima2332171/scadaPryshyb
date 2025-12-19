@@ -297,17 +297,21 @@
         }
 
 
-        <text x="360" y="20" text-anchor="middle" fill="var(--color-element)">
-          status: {{getMvcEssStatus(item.id)}}
-        </text>
 
-        <text x="200" y="20" text-anchor="middle" fill="var(--color-element)">
-          {{getMvcEssStatus(item.id)}}
-        </text>
+
+
 
 
         <text x="60" y="20" text-anchor="middle" fill="var(--color-element)">
           {{getMvcGridMode(item.id)}}
+        </text>
+
+        <text x="200" y="20" text-anchor="middle" fill="var(--color-element)">
+          {{getMvcMode(item.id)}}
+        </text>
+
+        <text x="360" y="20" text-anchor="middle" fill="var(--color-element)">
+          status: {{getMvcEssStatus(item.id)}}
         </text>
 
         <text x="220" y="410" text-anchor="middle" fill="var(--color-element)" [attr.font-size]="fontSizePx">

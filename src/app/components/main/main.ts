@@ -129,6 +129,14 @@ export class Main implements OnChanges{
     return mvcItem.local_controller.ess_status;
   }
 
+  getMvcMode(id: number): any {
+    const mvcItem = this.data?.mvc?.find((m: any) => m.id === id);
+    if (!mvcItem || !mvcItem.local_controller) {
+      return "--"; // или '--', если хочешь показать отсутствие данных
+    }
+    return mvcItem.local_controller.mode;
+  }
+
   getTotalPowerKtpInverters(inverters:any){
     if (!inverters || !Array.isArray(inverters)){
       return '---';
