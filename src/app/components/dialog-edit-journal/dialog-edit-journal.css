@@ -89,3 +89,45 @@ tr.active-modify-interval{
   border-color: #3f51b5;
   box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
 }
+
+.clickable-cell {
+  cursor: pointer;
+  user-select: none;
+  padding: 8px;
+  text-align: center;
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+
+.clickable-cell:hover {
+  background-color: #e3f2fd;
+}
+
+.clickable-cell strong {
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.row-locked {
+  background-color: rgba(0, 0, 0, 0.03); /* Легке сіре тло */
+}
+
+/* Стиль для інпутів у заблокованому рядку */
+.number-input:disabled {
+  background-color: transparent;
+  border-color: transparent;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Вимикаємо курсор "рука" для логічних комірок */
+.cell-disabled {
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+/* Кнопка видалення має працювати завжди, тому для неї курсор залишаємо */
+.row-locked .icon-btn {
+  cursor: pointer;
+  opacity: 1;
+}

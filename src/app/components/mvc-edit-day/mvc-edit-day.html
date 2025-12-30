@@ -14,7 +14,7 @@
     <div class="mvc-edit-container">
       <div class="left-block">
 
-        @if (!isLoading) {
+        @if (isLoading) {
           <div class="loader-container">
             <div class="spinner">
               <div class="lds-spinner">
@@ -33,14 +33,13 @@
               </div>
             </div>
           </div>
-        }
-        @if (isLoading) {
-          @if(notFound){
+        } @else {
+          @if (notFound) {
             <div class="no-data-message">
               <h3>Журнал за {{ day }} не знайдено</h3>
               <p>Ви можете створити нові уставки, завантаживши Excel-файл праворуч.</p>
             </div>
-          } @else if (setPointToday) {
+          }@else if (setPointToday) {
             <div class="header-block">
 
               <div class="receivedAt">
@@ -85,39 +84,40 @@
                 <thead>
                 <tr>
                   <th>Час</th>
-                  <th>Grid*</th>
                   <th>Мережа</th>
-                  <th>PV*</th>
+                  <th>Сценарій</th>
+                  <th>Напрямок PV</th>
                   <th>PV</th>
-                  <th>Небал.</th>
-                  <th>BESS*</th>
+                  <th>BESS1 з</th>
                   <th>BESS1</th>
+                  <th>BESS2 з</th>
                   <th>BESS2</th>
                 </tr>
                 </thead>
 
                 <tbody>
                   @for (item of setPointToday.data; track item.startTime) {
-                    <tr [class.active-interval]="isIntervalActive(item)" [class.active-modify-interval]="isIntervalModifyActive(item)">
+                    <tr [class.active-interval]="isIntervalActive(item)"
+                        [class.active-modify-interval]="isIntervalModifyActive(item)">
                       <td>{{ getLocalTime(item.startTime) }} – {{ getLocalTime(item.endTime) }}</td>
-                      <td>{{ item.priorityGrid ? 'Так' : 'Ні' }}</td>
                       <td>
                         <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.dischargeToGrid }}<br>
                         <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.chargeFromGrid }}
                       </td>
-                      <td>{{ item.priorityPv ? 'Так' : 'Ні' }}</td>
+                      <td> {{ item.scenario }}</td>
+                      <td>{{ getPvMode(item.pvMode) }}</td>
                       <td>
                         {{ item.pv }}
                       </td>
                       <td>
-                        {{ item.imbalances ? 'Так' : 'Ні' }}
-                      </td>
-                      <td>
-                        {{ item.priorityBess ? 'Так' : 'Ні' }}
+                        {{ getBessChargeSource(item.bess1ChargeSource) }}
                       </td>
                       <td>
                         <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess1Discharge }}<br>
                         <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess1Charge }}
+                      </td>
+                      <td>
+                        {{ getBessChargeSource(item.bess2ChargeSource) }}
                       </td>
                       <td>
                         <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess2Discharge }}<br>
@@ -133,12 +133,12 @@
 
       </div>
       <div class="right-block">
-        <h3>Excel імпорт / експорт</h3>
+        <h3>Excel імпорт</h3>
 
 
-        <button class="btn-secondary" (click)="downloadFile()">
-          Завантажити поточний Excel
-        </button>
+        <!--        <button class="btn-secondary" (click)="downloadFile()">-->
+        <!--          Завантажити поточний Excel-->
+        <!--        </button>-->
 
 
         <div class="upload-dropzone"
@@ -151,7 +151,7 @@
 
             Перетягніть файл Excel сюди або виберіть вручну <br>
             <button class="btn-secondary" (click)="fileInput.click()">Вибрати файл</button>
-            <input type="file" #fileInput (change)="onFileSelected($event)" accept=".xlsx,.xls" hidden/>
+            <input type="file" #fileInput (change)="onFileSelected($event)" accept=".xlsx,.xls,.xlsm" hidden/>
 
           } @else {
 

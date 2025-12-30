@@ -10,6 +10,9 @@
     <div class="control-panel">
       <div class="panel-header">
         <h2>Налаштування режиму роботи</h2>
+<!--        <span>SOC1</span>-->
+<!--        <span>SOC2</span>-->
+<!--        <span>Active power</span>-->
       </div>
 
       <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="settings-grid">
@@ -20,21 +23,20 @@
           <div class="setting-input-select">
             <select formControlName="workMode">
               @for (mode of workModes; track mode.value) {
-                <option [value]="mode.value">{{ mode.label }}</option>
+                <option [value]="mode.value"
+                        [selected]="mode.value === currentDetectedMode"
+                        [style.background-color]="mode.value === currentDetectedMode ? '#90caf9' : ''"
+                        [style.color]="mode.value === currentDetectedMode ? 'white' : ''">
+                  {{ mode.label }}
+<!--                  @if (mode.value === currentDetectedMode && mode.value !== 'default' && mode.value !== 'undefined') {-->
+<!--                    <span style="margin-left: 8px; font-style: italic;">(поточний)</span>-->
+<!--                  }-->
+                </option>
               }
             </select>
           </div>
         </div>
 
-        <div class="setting-row priority">
-          <div class="setting-label">Пріоритет мережа</div>
-          <div class="setting-input">
-            <label class="checkbox-wrapper large">
-              <input type="checkbox" formControlName="priorityGrid">
-              <span class="checkmark"></span>
-            </label>
-          </div>
-        </div>
 
 
         <!-- Видача в мережу -->
@@ -55,25 +57,16 @@
           </div>
         </div>
 
-        <div class="setting-row priority">
-          <div class="setting-label">Позитивні небаланси</div>
+        <div class="setting-row">
+          <div class="setting-label">Напрямок PV</div>
           <div class="setting-input">
-            <label class="checkbox-wrapper large">
-              <input type="checkbox" formControlName="imbalances">
-              <span class="checkmark"></span>
-            </label>
-          </div>
-        </div>
-
-
-        <!-- Пріоритет PV -->
-        <div class="setting-row priority">
-          <div class="setting-label">Пріоритет PV</div>
-          <div class="setting-input">
-            <label class="checkbox-wrapper large">
-              <input type="checkbox" formControlName="priorityPv">
-              <span class="checkmark"></span>
-            </label>
+            <select formControlName="pvMode">
+              <option value="OFF">Викл</option>
+              <option value="GRID">В мережу</option>
+              <option value="BESS">В батареї</option>
+              <option value="GRID_THEN_BESS">В мережу → надлишок у батареї</option>
+              <option value="BESS_THEN_GRID">В батареї → надлишок у мережу</option>
+            </select>
           </div>
         </div>
 
@@ -85,64 +78,39 @@
           </div>
         </div>
 
-        <!-- Пріоритет BESS -->
-        <div class="setting-row priority">
-          <div class="setting-label">Пріоритет BESS</div>
-          <div class="setting-input">
-            <label class="checkbox-wrapper large">
-              <input type="checkbox" formControlName="priorityBess">
-              <span class="checkmark"></span>
-            </label>
-          </div>
-        </div>
         <!-- BESS1 -->
-        <div class="setting-row bess">
-
-          <div class="setting-label">Уставка BESS1, кВт</div>
-          <div class="setting-input dual">
-            <div class="input-group">
-              <i class="fa-solid fa-arrow-down arrow-down"></i>
-              <input
-                type="number"
-                formControlName="bess1Charge"
-                class="main"
-                placeholder="0"
-                max="0">
-            </div>
-            <div class="input-group">
-              <i class="fa-solid fa-arrow-up arrow-up"></i>
-              <input
-                type="number"
-                formControlName="bess1Discharge"
-                class="main"
-                placeholder="0"
-                min="0">
-            </div>
+        <div class="setting-row bess compact">
+          <div class="setting-label">BESS1</div>
+          <div class="bess-compact-row">
+            Заряд з
+            <select formControlName="bess1ChargeSource" class="tiny-select">
+              <option value="OFF">-</option>
+              <option value="GRID">мережі</option>
+              <option value="PV">PV</option>
+              <option value="PV_GRID">PV-мережа</option>
+            </select>
+            <i class="fa-solid fa-arrow-down arrow-down"></i>
+            <input type="number" formControlName="bess1Charge" class="tiny-input charge">
+            <i class="fa-solid fa-arrow-up arrow-up"></i>
+            <input type="number" formControlName="bess1Discharge" class="tiny-input discharge">
           </div>
         </div>
 
         <!-- BESS2 -->
-        <div class="setting-row bess">
-          <div class="setting-label">Уставка BESS2, кВт</div>
-          <div class="setting-input dual">
-            <div class="input-group">
-              <i class="fa-solid fa-arrow-down arrow-down"></i>
-              <input
-                type="number"
-                formControlName="bess2Charge"
-                class="main"
-                placeholder="0"
-                max="0">
-            </div>
-            <div class="input-group">
-              <i class="fa-solid fa-arrow-up arrow-up"></i>
-              <input
-                type="number"
-                formControlName="bess2Discharge"
-                class="main"
-                placeholder="0"
-                min="0">
-            </div>
+        <div class="setting-row bess compact">
+          <div class="setting-label">BESS2</div>
+          <div class="bess-compact-row">
+            Заряд з
+            <select formControlName="bess2ChargeSource" class="tiny-select">
+              <option value="OFF">-</option>
+              <option value="GRID">мережі</option>
+              <option value="PV">PV</option>
+              <option value="PV_GRID">PV-мережа</option>
+            </select>
+            <i class="fa-solid fa-arrow-down arrow-down"></i>
+            <input type="number" formControlName="bess2Charge" class="tiny-input charge">
+            <i class="fa-solid fa-arrow-up arrow-up"></i>
+            <input type="number" formControlName="bess2Discharge" class="tiny-input discharge">
           </div>
         </div>
 
@@ -199,7 +167,7 @@
               </div>
             </div>
 
-            @if (!isLoading) {
+            @if (isLoading) {
               <div class="loader-container">
                 <div class="spinner">
                   <div class="lds-spinner">
@@ -228,13 +196,13 @@
                 <thead>
                 <tr>
                   <th>Час</th>
-                  <th>Grid*</th>
+                  <th>Сценарій</th>
                   <th>Мережа</th>
-                  <th>PV*</th>
+<!--                  <th>PV напрямок</th>-->
                   <th>PV</th>
-                  <th>Небал.</th>
-                  <th>BESS*</th>
+<!--                  <th>BESS1</th>-->
                   <th>BESS1</th>
+<!--                  <th>BESS2</th>-->
                   <th>BESS2</th>
                   <th></th>
                 </tr>
@@ -254,8 +222,12 @@
                       </td>
 
                       <td>
-                        {{ item.priorityGrid ? 'Так' : 'Ні' }}
+                        {{item.scenario}}
                       </td>
+
+<!--                      <td>-->
+<!--                        {{ item.priorityGrid ? 'Так' : 'Ні' }}-->
+<!--                      </td>-->
 
                       <!-- GRID -->
                       <td class="grid-cell">
@@ -269,27 +241,23 @@
                       </td>
 
                       <!-- PRIORITY -->
-                      <td>{{ item.priorityPv ? 'Так' : 'Ні' }}</td>
+<!--                      <td>{{ getPvMode(item.pvMode) }}</td>-->
 
                       <!-- PV -->
                       <td>{{ item.pv }}</td>
 
                       <!-- IMBALANCES -->
-                      <td>
-                        @if (item.imbalances) {
-                          Так
-                        } @else {
-                          Ні
-                        }
-                      </td>
 
-                      <td>{{ item.priorityBess ? 'Так' : 'Ні' }}</td>
+
+<!--                      <td>{{ getBessChargeSource(item.bess1ChargeSource) }}</td>-->
 
                       <!-- BESS1 -->
                       <td>
                         <i class="fa-solid fa-arrow-up arrow-up"></i>: {{ item.bess1Discharge }}<br>
                         <i class="fa-solid fa-arrow-down arrow-down"></i>: {{ item.bess1Charge }}
                       </td>
+
+<!--                      <td>{{ getBessChargeSource(item.bess2ChargeSource) }}</td>-->
 
                       <!-- BESS2 -->
                       <td>

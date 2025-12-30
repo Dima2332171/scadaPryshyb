@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { MatDialog } from '@angular/material/dialog';
 import {convertKyivToUtc, convertUtcToKyiv} from '../../core/services/date-time.utils';
@@ -7,7 +6,7 @@ import {DialogWarning} from '../dialog-warning/dialog-warning';
 import {DialogAccept} from '../dialog-accept/dialog-accept';
 import {ControlStation} from '../../core/services/control-station';
 import {WindowVisibility} from '../../core/services/window-visibility';
-import {Subscription} from 'rxjs';
+import {finalize, Subscription} from 'rxjs';
 import {DialogConfirmDelete} from '../dialog-confirm-delete/dialog-confirm-delete';
 import {DialogEditJournal} from '../dialog-edit-journal/dialog-edit-journal';
 
@@ -25,11 +24,11 @@ export class MvcEditDay implements OnInit, OnDestroy {
   isDragOver = false;
   parsedData: any | null = null;
   setPointToday: any = null;
-  private focusSubscription!: Subscription;
+  focusSubscription!: Subscription;
   isLoading = false;
   notFound: boolean = false;
+
   constructor(
-    private http: HttpClient,
     private dialog: MatDialog,
     private controlStationService: ControlStation,
     private visibilityService: WindowVisibility,
@@ -53,27 +52,23 @@ export class MvcEditDay implements OnInit, OnDestroy {
   }
 
   loadData(): void {
-    this.isLoading = false;
-    this.controlStationService.getSetPointToday(this.day).subscribe({
-      next: data => {
-        this.setPointToday = data
-        console.log(data);
-        this.isLoading = true;
-        this.notFound = false;
-      },
-      error: (err) => {
-        if (err.status === 404){
-          this.notFound = true;
-          this.isLoading = true;
-        } else {
-          console.error('Помилка завантаження даних:', err);
-          this.isLoading = true;
-          this.notFound = false;
-        }
-        this.isLoading = true;
-      }
+    this.isLoading = true;
+    this.notFound = false;
 
-    })
+    this.controlStationService.getSetPointToday(this.day)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe({
+        next: data => {
+          this.setPointToday = data;
+        },
+        error: err => {
+          if (err.status === 404) {
+            this.notFound = true;
+          } else {
+            console.error('Помилка завантаження даних:', err);
+          }
+        }
+      })
   }
 
   openView(view: string, id?: number) {
@@ -90,14 +85,7 @@ export class MvcEditDay implements OnInit, OnDestroy {
 
   uploadFile() {
     if (!this.selectedFile) return;
-
     this.showAccept(this.parsedData);
-
-    // this.http.post('http://your-server.com/api/upload-excel', formData)
-    //   .subscribe({
-    //     next: res => alert('Файл успішно завантажено!'),
-    //     error: err => alert('Помилка завантаження файлу!')
-    //   });
   }
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -125,24 +113,10 @@ export class MvcEditDay implements OnInit, OnDestroy {
     }
   }
 
-  downloadFile() {
-    this.http.get(`http://localhost:8000/download/${this.day}`, {
-      responseType: 'blob'
-    }).subscribe(blob => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'report.xlsx';
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
-  }
 
   removeFile() {
     this.selectedFile = null;
   }
-
-
 
   parseExcel(file: File) {
     const reader = new FileReader();
@@ -168,15 +142,15 @@ export class MvcEditDay implements OnInit, OnDestroy {
         date: header.indexOf('дата'),
         start: header.indexOf('початок'),
         end: header.indexOf('кінець'),
-        priorityGrid: header.indexOf('пріоритет мережа'),
+        scenario: header.indexOf('сценарій'),
         chargeFromGrid: header.indexOf('заряд з мережі'),
         dischargeToGrid: header.indexOf('видача в мережу'),
-        priorityPv: header.indexOf('пріоритет pv'),
+        pvMode: header.indexOf('напрямок pv'),
         pv: header.indexOf('pv'),
-        imbalances: header.indexOf('небаланси'),
-        priorityBess: header.indexOf('пріоритет bess'),
+        bess1ChargeSource: header.indexOf('заряд bess1 з'),
         bess1Charge: header.indexOf('заряд bess1'),
         bess1Discharge: header.indexOf('розряд bess1'),
+        bess2ChargeSource: header.indexOf('заряд bess2 з'),
         bess2Charge: header.indexOf('заряд bess2'),
         bess2Discharge: header.indexOf('розряд bess2'),
       };
@@ -249,15 +223,15 @@ export class MvcEditDay implements OnInit, OnDestroy {
         grouped[dateKey].data.push({
           startTime: startTimeCombined ? convertKyivToUtc(startTimeCombined) : null,
           endTime: endTimeCombined ? convertKyivToUtc(endTimeCombined) : null,
-          priorityGrid: row[idx.priorityGrid]?.toString().trim().toLowerCase() === 'так',
+          scenario: row[idx.scenario] ? row[idx.scenario] : null,
           chargeFromGrid: row[idx.chargeFromGrid] != null ? Number(row[idx.chargeFromGrid]) : null,
           dischargeToGrid: row[idx.dischargeToGrid] != null ? Number(row[idx.dischargeToGrid]) : null,
-          priorityPv: row[idx.priorityPv]?.toString().trim().toLowerCase() === 'так',
+          pvMode: row[idx.pvMode],
           pv: row[idx.pv] != null ? Number(row[idx.pv]) : null,
-          imbalances: row[idx.imbalances] != null ? row[idx.imbalances].toString().trim().toLowerCase() === 'так' : null,
-          priorityBess: row[idx.priorityBess]?.toString().trim().toLowerCase() === 'так',
+          bess1ChargeSource: row[idx.bess1ChargeSource],
           bess1Charge: row[idx.bess1Charge] != null ? Number(row[idx.bess1Charge]) : null,
           bess1Discharge: row[idx.bess1Discharge] != null ? Number(row[idx.bess1Discharge]) : null,
+          bess2ChargeSource: row[idx.bess2ChargeSource],
           bess2Charge: row[idx.bess2Charge] != null ? Number(row[idx.bess2Charge]) : null,
           bess2Discharge: row[idx.bess2Discharge] != null ? Number(row[idx.bess2Discharge]) : null,
         });
@@ -300,7 +274,7 @@ export class MvcEditDay implements OnInit, OnDestroy {
 
     const requiredFields = [
       'startTime', 'endTime', 'chargeFromGrid', 'dischargeToGrid',
-      'pv', 'imbalances', 'bess1Charge', 'bess1Discharge',
+      'pv', 'bess1Charge', 'bess1Discharge',
       'bess2Charge', 'bess2Discharge'
     ];
 
@@ -425,6 +399,34 @@ export class MvcEditDay implements OnInit, OnDestroy {
         });
       }
     })
+  }
+
+  getBessChargeSource(item: any) {
+    if (item == 'PV'){
+      return 'Заряд з PV'
+    } else if (item == 'PV_GRID'){
+      return 'Заряд з PV-мережа'
+    } else if (item == 'GRID'){
+      return 'Заряд з мережі'
+    } else {
+      return '--'
+    }
+  }
+
+  getPvMode(item: any) {
+    if (item == 'BESS'){
+      return 'В батареї'
+    } else if (item == 'GRID'){
+      return 'В мережу'
+    } else if (item == 'GRID_THEN_BESS'){
+      return 'В мережу → надлишок у батареї '
+    } else if (item == 'BESS_THEN_GRID'){
+      return 'В батареї → надлишок у мережу '
+    } else if (item == 'OFF'){
+      return 'Викл'
+    } else {
+      return '--'
+    }
   }
 
   protected readonly convertUtcToKyiv = convertUtcToKyiv;

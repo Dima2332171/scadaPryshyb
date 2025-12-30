@@ -40,6 +40,7 @@ export class DialogAccept implements OnInit {
     this.isSending = true;
 
     const payload = this.data.parsedData; // уже в нужном формате!
+    console.log(payload);
 
     this.controlService.saveJournalDay(payload).subscribe({
       next: (res: any) => {

@@ -11,7 +11,9 @@ import {convertUtcToKyiv} from '../../core/services/date-time.utils';
 import {ControlStation} from '../../core/services/control-station';
 import {FormsModule} from '@angular/forms';
 
-
+type UndoAction =
+  | { type: 'delete'; index: number; item: any }
+  | { type: 'edit'; index: number; field: string; oldValue: any };
 
 @Component({
   selector: 'app-dialog-edit-journal',
@@ -28,7 +30,8 @@ import {FormsModule} from '@angular/forms';
 export class DialogEditJournal implements OnInit {
   isSending = false;
   localData: any[] = [];
-  private undoStack: { index: number, item: any }[] = [];
+  undoStack: UndoAction[] = [];
+  lastFocusedValue: any = null;
 
   constructor(
     public dialogRef: MatDialogRef<DialogEditJournal>,
@@ -49,15 +52,24 @@ export class DialogEditJournal implements OnInit {
   }
 
   deleteJournalInterval(index: number){
-    const removedItem = this.localData[index];
-    this.undoStack.push({ index, item: removedItem });
+    this.undoStack.push({
+      type: 'delete',
+      index,
+      item: structuredClone(this.localData[index])
+    })
     this.localData.splice(index, 1);
   }
 
-  undo(){
-    const lastAction = this.undoStack.pop();
-    if (lastAction) {
-      this.localData.splice(lastAction.index, 0, lastAction.item);
+  undo() {
+    const action = this.undoStack.pop();
+    if (!action) return;
+
+    if (action.type === 'delete') {
+      this.localData.splice(action.index, 0, action.item);
+    }
+
+    if (action.type === 'edit') {
+      this.localData[action.index][action.field] = action.oldValue;
     }
   }
 
@@ -74,10 +86,38 @@ export class DialogEditJournal implements OnInit {
   }
 
 
+  toggleBoolean(row: any, field: 'priorityGrid' | 'priorityPv' | 'priorityBess', index: number) {
+    this.undoStack.push({
+      type: 'edit',
+      index,
+      field,
+      oldValue: row[field]
+    });
+
+    row[field] = !row[field];
+  }
+
+  onFocus(row: any, field: string){
+    this.lastFocusedValue = row[field];
+  }
+
+  onNumberChange(row: any, field: string, index: number) {
+    if (this.lastFocusedValue !== row[field]) {
+      this.undoStack.push({
+        type: 'edit',
+        index,
+        field,
+        oldValue: this.lastFocusedValue
+      });
+    }
+  }
+
+
 
 
   isIntervalActive(item: any) {return item.isActive}
   isIntervalModifyActive(item: any) {return item.modify && item.isActive}
   isIntervalModify(item: any) {return item.modify}
-    protected readonly convertUtcToKyiv = convertUtcToKyiv;
+  protected readonly convertUtcToKyiv = convertUtcToKyiv;
+  protected readonly onfocus = onfocus;
 }

@@ -11,14 +11,17 @@
       <tr>
         <th>Початок</th>
         <th>Кінець</th>
-        <th>Пріор. мережа</th>
+<!--        <th>Пріор. мережа</th>-->
         <th>Заряд з мережі</th>
         <th>Розряд в мережу</th>
-        <th>Пріор. Pv</th>
+<!--        <th>Пріор. Pv</th>-->
+        <th>PV напрямок</th>
         <th>PV</th>
-        <th>Пріор. Bess</th>
+<!--        <th>Пріор. Bess</th>-->
+        <th>B1 Charge From</th>
         <th>B1 Charge</th>
         <th>B1 Discharge</th>
+        <th>B2 Charge From</th>
         <th>B2 Charge</th>
         <th>B2 Discharge</th>
       </tr>
@@ -28,14 +31,16 @@
           <tr>
             <td>{{ convertUtcToKyiv(row.startTime) }}</td>
             <td>{{ convertUtcToKyiv(row.endTime) }}</td>
-            <td>{{ row.priorityGrid ? 'Так' : 'Ні' }}</td>
+<!--            <td>{{ row.priorityGrid ? 'Так' : 'Ні' }}</td>-->
             <td>{{ row.chargeFromGrid }}</td>
             <td>{{ row.dischargeToGrid }}</td>
-            <td>{{ row.priorityPv ? 'Так' : 'Ні' }}</td>
+<!--            <td>{{ row.priorityPv ? 'Так' : 'Ні' }}</td>-->
+            <td>{{ row.pvMode}}</td>
             <td>{{ row.pv }}</td>
-            <td>{{ row.priorityBess ? 'Так' : 'Ні' }}</td>
+            <td>{{ row.bess1ChargeSource }}</td>
             <td>{{ row.bess1Charge }}</td>
             <td>{{ row.bess1Discharge }}</td>
+            <td>{{ row.bess2ChargeSource }}</td>
             <td>{{ row.bess2Charge }}</td>
             <td>{{ row.bess2Discharge }}</td>
           </tr>
